@@ -1,22 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { Leaf, Menu, Wallet, X } from "lucide-react";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { cn, truncatePublicKey } from "@/lib/utils";
 
-const NAV_LINKS = [
+const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Inicio" },
-  { href: "/tours", label: "Tours" },
-  { href: "/productos", label: "Productos" },
+  { href: "/explorar", label: "Explorar" },
+  { href: "/explorar/mapa", label: "Mapa" },
   { href: "/checkout", label: "Checkout" },
-  { href: "/dashboard/turista", label: "Turista" },
-  { href: "/dashboard/comerciante", label: "Comerciante" },
+  { href: "/tourist/mis-reservas", label: "Mis reservas" },
 ] as const;
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
+  const navLinks = useMemo(
+    () =>
+      user?.rol === "comerciante"
+        ? [...PUBLIC_NAV_LINKS, { href: "/dashboard/merchant", label: "Comerciante" }]
+        : [...PUBLIC_NAV_LINKS],
+    [user?.rol],
+  );
   const {
     isFreighterInstalled,
     isConnected,
@@ -51,7 +61,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -63,6 +73,26 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {loading ? null : user ? (
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                router.push("/");
+                router.refresh();
+              }}
+              className="hidden rounded-full border border-emerald-800/20 px-3 py-2 text-sm font-medium text-emerald-900 hover:bg-emerald-50 md:inline-flex dark:border-emerald-400/30 dark:text-emerald-200 dark:hover:bg-emerald-950"
+            >
+              Salir · {user.nombre}
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-full border border-emerald-800/20 px-3 py-2 text-sm font-medium text-emerald-900 hover:bg-emerald-50 md:inline-flex dark:border-emerald-400/30 dark:text-emerald-200 dark:hover:bg-emerald-950"
+            >
+              Iniciar sesión
+            </Link>
+          )}
           {isConnected && publicKey ? (
             <button
               type="button"
@@ -109,7 +139,7 @@ export function Navbar() {
         )}
       >
         <nav className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 text-sm font-medium">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -119,6 +149,29 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {loading ? null : user ? (
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                setOpen(false);
+                router.push("/");
+                router.refresh();
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-800/20 px-3 py-2 text-left"
+            >
+              Salir · {user.nombre}
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-800/20 px-3 py-2"
+            >
+              Iniciar sesión
+            </Link>
+          )}
 
           {isConnected && publicKey ? (
             <button

@@ -17,16 +17,16 @@ export default function Home() {
         </p>
         <div className="flex flex-wrap gap-3">
           <Link
-            href="/tours"
+            href="/explorar"
             className="rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-800"
           >
-            Explorar tours
+            Explorar y planificar
           </Link>
           <Link
-            href="/productos"
+            href="/explorar/mapa"
             className="rounded-full border border-emerald-800/20 px-5 py-2.5 text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950"
           >
-            Ver productos
+            Ver mapa rural
           </Link>
         </div>
       </section>

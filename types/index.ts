@@ -125,3 +125,21 @@ export interface CartItem {
   cantidad: number;
   precioUnitario: string;
 }
+
+export type {
+  ActivoPago,
+  AlertaDisponibilidad,
+  CanalPagoCheckout,
+  CategoriaOferta,
+  Coordenada,
+  DesgloseFinanciero,
+  DesgloseLinea,
+  EstadoPasaporte,
+  HorarioAtencion,
+  ItineraryItem,
+  OfertaTuristica,
+  PasaporteReserva,
+  PorcentajeAnticipoTurista,
+  TurnoCatalogo,
+  UnidadPrecio,
+} from "./tourist";

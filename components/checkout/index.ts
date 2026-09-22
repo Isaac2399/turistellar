@@ -1,2 +1,1 @@
-/** Checkout package summary and payment rails. */
-export {};
+export { CheckoutFlow } from "@/components/tourist/CheckoutFlow";
