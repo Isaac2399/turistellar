@@ -28,10 +28,27 @@ export function ExploreExperience() {
     });
   }, [categoria, query]);
 
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const inItinerary = useMemo(
     () => new Set(items.map((row) => row.ofertaId)),
     [items],
   );
+  const emphasizedIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const oferta of filtered) {
+      ids.add(oferta.id);
+      for (const childId of oferta.incluyeIds ?? []) ids.add(childId);
+    }
+    return [...ids];
+  }, [filtered]);
+
+  function focusOnMap(ofertaId: string) {
+    setSelectedId(ofertaId);
+    document.getElementById("mapa-rural")?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -42,7 +59,12 @@ export function ExploreExperience() {
           categoria={categoria}
           onCategoriaChange={setCategoria}
         />
-        <InteractiveMap items={items} className="hidden md:block" />
+        <InteractiveMap
+          items={items}
+          emphasizedIds={emphasizedIds}
+          selectedId={selectedId}
+          onSelectOferta={setSelectedId}
+        />
         <div className="grid gap-4 sm:grid-cols-2">
           {filtered.map((oferta) => (
             <OfferCard
@@ -57,7 +79,7 @@ export function ExploreExperience() {
           <p className="text-sm text-zinc-500">No hay ofertas para esos filtros.</p>
         ) : null}
       </div>
-      <ItineraryPanel />
+      <ItineraryPanel selectedId={selectedId} onFocus={focusOnMap} />
     </div>
   );
 }

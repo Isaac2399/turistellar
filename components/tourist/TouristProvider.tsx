@@ -11,6 +11,12 @@ import {
 } from "react";
 import { verificarDisponibilidad } from "@/lib/availability";
 import { createItineraryItem } from "@/lib/itinerary";
+import { estadoItinerario } from "@/lib/trip-progress";
+import {
+  aplicarAccionReserva,
+  normalizarEstadoReserva,
+  type AccionReserva,
+} from "@/types/estado-reserva";
 import type {
   AlertaDisponibilidad,
   CanalPagoCheckout,
@@ -41,7 +47,9 @@ interface TouristContextValue {
     stellarPublicKey?: string;
     stellarTxHash?: string;
   }) => PasaporteReserva | null;
-  marcarEscaneado: (reservaId: string) => void;
+  confirmarServicio: (reservaId: string) => void;
+  liberarFondos: (reservaId: string) => void;
+  reembolsarAnticipo: (reservaId: string) => void;
 }
 
 const TouristContext = createContext<TouristContextValue | null>(null);
@@ -63,7 +71,12 @@ export function TouristProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setItems(readJson<ItineraryItem[]>(ITINERARY_KEY, []));
-    setReservas(readJson<PasaporteReserva[]>(RESERVAS_KEY, []));
+    setReservas(
+      readJson<PasaporteReserva[]>(RESERVAS_KEY, []).map((row) => ({
+        ...row,
+        estado: normalizarEstadoReserva(row.estado),
+      })),
+    );
     setHydrated(true);
   }, []);
 
@@ -130,7 +143,7 @@ export function TouristProvider({ children }: { children: ReactNode }) {
       stellarPublicKey?: string;
       stellarTxHash?: string;
     }): PasaporteReserva | null => {
-      if (items.length === 0) return null;
+      if (estadoItinerario(items) !== "horarios_fijados") return null;
       const id = `pass-${Date.now().toString(36)}`;
       const codigoQr = `TURI-${id.slice(-8).toUpperCase()}-${Math.random()
         .toString(36)
@@ -142,7 +155,7 @@ export function TouristProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
         canalPago: input.canalPago,
         assetCode: input.assetCode,
-        estado: "anticipo_pagado",
+        estado: "anticipo_retenido",
         desglose: buildDesglose(items),
         items,
         stellarPublicKey: input.stellarPublicKey,
@@ -156,23 +169,30 @@ export function TouristProvider({ children }: { children: ReactNode }) {
     [items],
   );
 
-  const marcarEscaneado = useCallback((reservaId: string) => {
+  const aplicar = useCallback((reservaId: string, accion: AccionReserva) => {
     setReservas((current) =>
-      current.map((row) =>
-        row.id === reservaId
-          ? {
-              ...row,
-              estado:
-                row.estado === "anticipo_pagado"
-                  ? "escaneado_destino"
-                  : row.estado === "escaneado_destino"
-                    ? "fondos_liberados"
-                    : row.estado,
-            }
-          : row,
-      ),
+      current.map((row) => {
+        if (row.id !== reservaId) return row;
+        const siguiente = aplicarAccionReserva(row.estado, accion);
+        return siguiente ? { ...row, estado: siguiente } : row;
+      }),
     );
   }, []);
+
+  const confirmarServicio = useCallback(
+    (reservaId: string) => aplicar(reservaId, "confirmar_servicio"),
+    [aplicar],
+  );
+
+  const liberarFondos = useCallback(
+    (reservaId: string) => aplicar(reservaId, "liberar_fondos"),
+    [aplicar],
+  );
+
+  const reembolsarAnticipo = useCallback(
+    (reservaId: string) => aplicar(reservaId, "reembolsar"),
+    [aplicar],
+  );
 
   const value = useMemo(
     () => ({
@@ -185,7 +205,9 @@ export function TouristProvider({ children }: { children: ReactNode }) {
       scheduleItem,
       clearItinerary,
       confirmarReserva,
-      marcarEscaneado,
+      confirmarServicio,
+      liberarFondos,
+      reembolsarAnticipo,
     }),
     [
       items,
@@ -197,7 +219,9 @@ export function TouristProvider({ children }: { children: ReactNode }) {
       scheduleItem,
       clearItinerary,
       confirmarReserva,
-      marcarEscaneado,
+      confirmarServicio,
+      liberarFondos,
+      reembolsarAnticipo,
     ],
   );
 

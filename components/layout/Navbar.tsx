@@ -11,9 +11,6 @@ import { cn, truncatePublicKey } from "@/lib/utils";
 const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/explorar", label: "Explorar" },
-  { href: "/explorar/mapa", label: "Mapa" },
-  { href: "/checkout", label: "Checkout" },
-  { href: "/tourist/mis-reservas", label: "Mis reservas" },
 ] as const;
 
 export function Navbar() {

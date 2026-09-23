@@ -6,6 +6,6 @@ export { ItineraryPanel } from "./ItineraryPanel";
 export { ItineraryTimeline } from "./ItineraryTimeline";
 export { CheckoutFlow } from "./CheckoutFlow";
 export { DigitalPassportList } from "./DigitalPassportList";
-export { TouristSubnav } from "./TouristSubnav";
+export { TripSteps } from "./TripSteps";
 export { ExploreExperience } from "./ExploreExperience";
 export { CategoriaMarkerIcon, MapMarkerBadge } from "./CategoriaMarkerIcon";

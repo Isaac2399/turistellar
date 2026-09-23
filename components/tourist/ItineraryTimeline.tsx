@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTourist } from "@/components/tourist/TouristProvider";
 import { getOfertaById } from "@/lib/mock-data";
+import { alertasDisponibilidad, puedePagarAnticipo } from "@/lib/trip-progress";
 import { CategoriaMarkerIcon } from "@/components/tourist/CategoriaMarkerIcon";
 import type { AlertaDisponibilidad, ItineraryItem } from "@/types/tourist";
 
@@ -31,6 +32,8 @@ export function ItineraryTimeline() {
   const [alerta, setAlerta] = useState<AlertaDisponibilidad | null>(null);
 
   const unscheduled = items.filter((row) => !row.fecha || !row.hora);
+  const alertas = useMemo(() => alertasDisponibilidad(items), [items]);
+  const puedeContinuar = puedePagarAnticipo(items);
   const dayItems = items.filter((row) => row.fecha === fecha && row.hora);
 
   const byHour = useMemo(() => {
@@ -196,19 +199,28 @@ export function ItineraryTimeline() {
         </ol>
       </section>
 
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href="/checkout"
-          className="inline-flex rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-800"
-        >
-          Continuar a checkout
-        </Link>
-        <Link
-          href="/explorar/mapa"
-          className="inline-flex rounded-full border border-emerald-800/20 px-5 py-2.5 text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950"
-        >
-          Ver puntos en el mapa
-        </Link>
+      <div className="space-y-2">
+        {puedeContinuar ? (
+          <Link
+            href="/checkout"
+            className="inline-flex rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-800"
+          >
+            Pagar el anticipo
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="inline-flex rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+          >
+            Pagar el anticipo
+          </button>
+        )}
+        {!puedeContinuar && alertas.length > 0 ? (
+          <p className="text-sm text-zinc-500">
+            Corrige las alertas de disponibilidad para continuar.
+          </p>
+        ) : null}
       </div>
     </div>
   );

@@ -1,17 +1,7 @@
-import { createHash, timingSafeEqual } from "crypto";
+import { hashPassword, hashesMatch } from "./password";
 import type { AuthSession } from "./types";
 
 type DemoUser = AuthSession & { passwordHash: string };
-
-function hashPassword(password: string): string {
-  return createHash("sha256").update(`turistellar:${password}`).digest("hex");
-}
-
-function hashesMatch(stored: string, incoming: string): boolean {
-  const left = Buffer.from(stored);
-  const right = Buffer.from(incoming);
-  return left.length === right.length && timingSafeEqual(left, right);
-}
 
 const DEMO_USERS: DemoUser[] = [
   {
@@ -36,6 +26,11 @@ const DEMO_USERS: DemoUser[] = [
     passwordHash: hashPassword("Turista1234!"),
   },
 ];
+
+export function isDemoEmail(email: string): boolean {
+  const normalized = email.trim().toLowerCase();
+  return DEMO_USERS.some((item) => item.email === normalized);
+}
 
 export function authenticateDemoUser(email: string, password: string): AuthSession | null {
   const normalized = email.trim().toLowerCase();

@@ -3,6 +3,8 @@
  * Amounts stay as strings to match Stellar 7-decimal precision used elsewhere.
  */
 
+import type { EstadoReserva } from "./estado-reserva";
+
 export type CategoriaOferta =
   | "alojamiento"
   | "tour"
@@ -16,12 +18,6 @@ export type PorcentajeAnticipoTurista = 30 | 50;
 export type CanalPagoCheckout = "fiat" | "stellar";
 
 export type ActivoPago = "USDC" | "XLM" | "USD";
-
-export type EstadoPasaporte =
-  | "anticipo_pagado"
-  | "escaneado_destino"
-  | "fondos_liberados"
-  | "cancelado";
 
 export interface Coordenada {
   lat: number;
@@ -102,7 +98,7 @@ export interface PasaporteReserva {
   createdAt: string;
   canalPago: CanalPagoCheckout;
   assetCode: ActivoPago;
-  estado: EstadoPasaporte;
+  estado: EstadoReserva;
   desglose: DesgloseFinanciero;
   items: ItineraryItem[];
   stellarPublicKey?: string;

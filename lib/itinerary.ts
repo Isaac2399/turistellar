@@ -61,9 +61,9 @@ export function buildDesglose(items: readonly ItineraryItem[]): DesgloseFinancie
   return { lineas, total, anticipo, saldo };
 }
 
-export function puntosConectados(items: readonly ItineraryItem[]): Coordenada[] {
+export function paradasConectadas(items: readonly ItineraryItem[]): OfertaTuristica[] {
   const seen = new Set<string>();
-  const points: Coordenada[] = [];
+  const stops: OfertaTuristica[] = [];
 
   const ordered = [...items].sort((a, b) => {
     const aKey = `${a.fecha ?? "9999"}T${a.hora ?? "99:99"}`;
@@ -77,13 +77,17 @@ export function puntosConectados(items: readonly ItineraryItem[]): Coordenada[] 
     const ids = oferta.incluyeIds?.length ? oferta.incluyeIds : [oferta.id];
     for (const id of ids) {
       const child = getOfertaById(id) ?? (id === oferta.id ? oferta : undefined);
-      if (!child || seen.has(child.id)) continue;
+      if (!child || child.categoria === "paquete" || seen.has(child.id)) continue;
       seen.add(child.id);
-      points.push(child.coordenadas);
+      stops.push(child);
     }
   }
 
-  return points;
+  return stops;
+}
+
+export function puntosConectados(items: readonly ItineraryItem[]): Coordenada[] {
+  return paradasConectadas(items).map((stop) => stop.coordenadas);
 }
 
 export function ofertasEnItinerario(items: readonly ItineraryItem[]): OfertaTuristica[] {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CreditCard, Loader2, Wallet } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,8 @@ import { formatUsd } from "@/lib/money";
 import { truncatePublicKey } from "@/lib/utils";
 import { CATEGORIA_OFERTA_LABEL } from "@/lib/mock-data";
 import { verificarDisponibilidad } from "@/lib/availability";
+import { estadoItinerario } from "@/lib/trip-progress";
+import { ESTADO_RESERVA_LABEL, ESTADO_RESERVA_TONE } from "@/types/estado-reserva";
 import type { CanalPagoCheckout } from "@/types/tourist";
 
 export function CheckoutFlow() {
@@ -29,6 +32,7 @@ export function CheckoutFlow() {
   const [cardName, setCardName] = useState("");
   const [cardLast4, setCardLast4] = useState("");
 
+  const estadoViaje = estadoItinerario(items);
   const alerts = items
     .map((item) => verificarDisponibilidad(item))
     .filter((row): row is NonNullable<typeof row> => row !== null);
@@ -37,6 +41,12 @@ export function CheckoutFlow() {
     setError(null);
     if (items.length === 0) {
       setError("Tu itinerario está vacío.");
+      return;
+    }
+    if (estadoViaje !== "horarios_fijados") {
+      setError(
+        "Fija la fecha y, si la oferta lo exige, la hora de cada parada. Esto aún no es una reserva.",
+      );
       return;
     }
     if (alerts.length > 0) {
@@ -157,7 +167,13 @@ export function CheckoutFlow() {
       </section>
 
       <aside className="space-y-5 rounded-2xl border border-emerald-900/10 bg-white p-5 dark:border-white/10 dark:bg-zinc-950">
-        <h2 className="text-lg font-semibold">Desglose financiero</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold">Desglose financiero</h2>
+          <Badge tone={ESTADO_RESERVA_TONE[estadoViaje]}>{ESTADO_RESERVA_LABEL[estadoViaje]}</Badge>
+        </div>
+        <p className="text-xs text-zinc-500">
+          Al pagar, la reserva nace en {ESTADO_RESERVA_LABEL.anticipo_retenido}.
+        </p>
         <dl className="space-y-2 text-sm">
           <div className="flex justify-between">
             <dt>Total del viaje</dt>
@@ -173,8 +189,8 @@ export function CheckoutFlow() {
           </div>
         </dl>
         <p className="text-xs text-zinc-500">
-          El anticipo queda en escrow (Soroban). El comerciante lo libera al escanear el QR
-          del pasaporte digital en destino.
+          El anticipo queda retenido. El escaneo confirma el servicio y, después, se pueden
+          liberar los fondos. El reembolso simulado solo aplica mientras sigue retenido.
         </p>
 
         <div className="grid grid-cols-2 gap-2">

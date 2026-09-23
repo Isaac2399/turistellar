@@ -1,21 +1,3 @@
 # Soroban contracts (Rust)
 
-This folder is reserved for Stellar smart contracts (escrow, marketplace, payouts).
-
-Suggested layout once contracts are scaffolded with the Stellar CLI:
-
-```
-contracts/
-  escrow/
-    src/lib.rs
-    Cargo.toml
-  marketplace/
-    src/lib.rs
-    Cargo.toml
-```
-
-Initialize a contract with:
-
-```bash
-stellar contract init contracts/escrow
-```
+The escrow contract lives in `contracts/escrow`. Test, build, and testnet deploy steps are in `contracts/escrow/README.md`. Marketplace is not part of this delivery.

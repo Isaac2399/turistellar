@@ -22,6 +22,7 @@ import {
   type ProductoArtesanal,
   type TourComerciante,
 } from "@/lib/mock-merchant-data";
+import { aplicarAccionReserva, ESTADO_RESERVA_LABEL } from "@/types/estado-reserva";
 
 type MerchantContextValue = MerchantSnapshot & {
   savePerfil: (perfil: PerfilEmpresa) => void;
@@ -203,28 +204,24 @@ export function MerchantProvider({ children }: { children: ReactNode }) {
 
   const releaseEscrow = useCallback((reservaId: string) => {
     setState((prev) => {
-      const reservas = prev.reservas.map((reserva) =>
-        reserva.id === reservaId
-          ? {
-              ...reserva,
-              estadoPago: "pagado_completo" as const,
-              pendienteCobrar: "0.00",
-              anticipoPagado: reserva.montoTotal,
-            }
-          : reserva,
+      const reserva = prev.reservas.find((item) => item.id === reservaId);
+      const siguiente = reserva
+        ? aplicarAccionReserva(reserva.estadoPago, "liberar_fondos")
+        : null;
+      if (!reserva || !siguiente) return prev;
+
+      const reservas = prev.reservas.map((item) =>
+        item.id === reservaId ? { ...item, estadoPago: siguiente } : item,
       );
 
-      const reserva = prev.reservas.find((item) => item.id === reservaId);
-      const notificacion: NotificacionComerciante | null = reserva
-        ? {
-            id: `ntf-release-${reservaId}`,
-            tipo: "saldo_pendiente",
-            titulo: `Escrow liberado: ${reserva.turistaNombre}`,
-            mensaje: `Se confirmó la liberación on-chain del contrato ${reserva.escrowContractId.slice(0, 12)}…`,
-            leida: false,
-            createdAt: new Date().toISOString(),
-          }
-        : null;
+      const notificacion: NotificacionComerciante | null = {
+        id: `ntf-release-${reservaId}`,
+        tipo: "saldo_pendiente",
+        titulo: `${ESTADO_RESERVA_LABEL.fondos_liberados}: ${reserva.turistaNombre}`,
+        mensaje: `Se confirmó la liberación simulada del contrato ${reserva.escrowContractId.slice(0, 12)}…`,
+        leida: false,
+        createdAt: new Date().toISOString(),
+      };
 
       return {
         ...prev,

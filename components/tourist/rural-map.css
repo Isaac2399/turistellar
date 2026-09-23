@@ -1,0 +1,26 @@
+.turistellar-map.leaflet-container {
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  font-family: inherit;
+  background: #134e4a;
+}
+
+.turistellar-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.turistellar-popup .leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  padding: 0;
+}
+
+.turistellar-popup .leaflet-popup-content {
+  margin: 12px 14px 14px;
+  min-width: 190px;
+}
+
+.turistellar-popup .leaflet-popup-content p {
+  margin: 0;
+}

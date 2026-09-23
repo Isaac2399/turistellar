@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Route, Trash2 } from "lucide-react";
+import { Clock, Trash2 } from "lucide-react";
 import { getOfertaById } from "@/lib/mock-data";
 import { buildDesglose, etiquetaHorario } from "@/lib/itinerary";
 import { formatUsd } from "@/lib/money";
+import { cn } from "@/lib/utils";
 import { useTourist } from "@/components/tourist/TouristProvider";
 import { CategoriaMarkerIcon } from "@/components/tourist/CategoriaMarkerIcon";
 
-export function ItineraryPanel() {
+interface ItineraryPanelProps {
+  selectedId?: string | null;
+  onFocus?: (ofertaId: string) => void;
+}
+
+export function ItineraryPanel({ selectedId, onFocus }: ItineraryPanelProps) {
   const { items, removeItem, clearItinerary } = useTourist();
   const desglose = buildDesglose(items);
 
@@ -39,21 +45,29 @@ export function ItineraryPanel() {
           {items.map((item) => {
             const oferta = getOfertaById(item.ofertaId);
             if (!oferta) return null;
+            const selected = selectedId === oferta.id;
             return (
               <li
                 key={item.id}
-                className="flex gap-2 rounded-xl border border-emerald-900/10 p-2 dark:border-white/10"
+                className={cn(
+                  "flex gap-2 rounded-xl border border-emerald-900/10 p-2 dark:border-white/10",
+                  selected && "ring-2 ring-amber-400",
+                )}
               >
                 <span className="mt-0.5 text-emerald-700">
                   <CategoriaMarkerIcon categoria={oferta.categoria} className="h-4 w-4" />
                 </span>
-                <div className="min-w-0 flex-1">
+                <button
+                  type="button"
+                  onClick={() => onFocus?.(oferta.id)}
+                  className="min-w-0 flex-1 text-left"
+                >
                   <p className="truncate text-sm font-medium">{oferta.titulo}</p>
                   <p className="text-xs text-zinc-500">{etiquetaHorario(item)}</p>
                   <p className="text-xs text-zinc-500">
                     {formatUsd(oferta.precioUsd)} · anticipo {oferta.porcentajeAnticipo}%
                   </p>
-                </div>
+                </button>
                 <button
                   type="button"
                   aria-label="Quitar"
@@ -79,28 +93,25 @@ export function ItineraryPanel() {
         </p>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2">
-        <Link
-          href="/explorar/agenda"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 aria-disabled:pointer-events-none aria-disabled:opacity-50"
-          aria-disabled={items.length === 0}
-        >
-          <Clock className="h-4 w-4" />
-          Agendar por horas
-        </Link>
-        <Link
-          href="/explorar/mapa"
-          className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-800/20 px-4 py-2 text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950"
-        >
-          <Route className="h-4 w-4" />
-          Ver ruta en mapa
-        </Link>
-        <Link
-          href="/checkout"
-          className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-800/20 px-4 py-2 text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950"
-        >
-          Ir al checkout
-        </Link>
+      <div className="mt-4">
+        {items.length > 0 ? (
+          <Link
+            href="/explorar/agenda"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
+          >
+            <Clock className="h-4 w-4" />
+            Fijar horarios
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          >
+            <Clock className="h-4 w-4" />
+            Fijar horarios
+          </button>
+        )}
       </div>
     </aside>
   );
