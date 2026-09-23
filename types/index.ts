@@ -3,24 +3,15 @@
  * These models are shared by the App Router UI, API routes, and future Soroban clients.
  */
 
+import type { EstadoReserva } from "./estado-reserva";
+
+export type { EstadoReserva };
+
 /** Supported on-chain / off-ramp payment rails for a booking package. */
 export type MetodoPago = "xlm" | "usdc" | "fiat_ramp";
 
 /** Roles recognized by dashboard routes. */
 export type RolUsuario = "turista" | "comerciante" | "admin";
-
-/**
- * Lifecycle of a tourist booking package.
- * Maps to both off-chain persistence and on-chain escrow status.
- */
-export type EstadoReserva =
-  | "pendiente"
-  | "pagado"
-  | "confirmado"
-  | "en_curso"
-  | "completado"
-  | "cancelado"
-  | "reembolsado";
 
 /** On-chain settlement status for a Stellar payment or Soroban escrow. */
 export type EstadoTransaccion =
@@ -134,7 +125,6 @@ export type {
   Coordenada,
   DesgloseFinanciero,
   DesgloseLinea,
-  EstadoPasaporte,
   HorarioAtencion,
   ItineraryItem,
   OfertaTuristica,

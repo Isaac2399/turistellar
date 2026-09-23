@@ -2,33 +2,19 @@
 
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { QrCode, ScanLine, ShieldCheck } from "lucide-react";
+import { QrCode, ScanLine, ShieldCheck, Undo2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTourist } from "@/components/tourist/TouristProvider";
 import { formatUsd } from "@/lib/money";
 import { getOfertaById } from "@/lib/mock-data";
 import { truncatePublicKey } from "@/lib/utils";
-import type { EstadoPasaporte } from "@/types/tourist";
-
-const ESTADO_LABEL: Record<EstadoPasaporte, string> = {
-  anticipo_pagado: "Anticipo en escrow",
-  escaneado_destino: "QR validado en destino",
-  fondos_liberados: "Fondos liberados",
-  cancelado: "Cancelado",
-};
-
-const ESTADO_TONE: Record<EstadoPasaporte, "amber" | "sky" | "emerald" | "rose"> = {
-  anticipo_pagado: "amber",
-  escaneado_destino: "sky",
-  fondos_liberados: "emerald",
-  cancelado: "rose",
-};
+import { ESTADO_RESERVA_LABEL, ESTADO_RESERVA_TONE } from "@/types/estado-reserva";
 
 export function DigitalPassportList() {
   const params = useSearchParams();
   const focus = params.get("pass");
-  const { reservas, marcarEscaneado, hydrated } = useTourist();
+  const { reservas, confirmarServicio, liberarFondos, reembolsarAnticipo, hydrated } = useTourist();
 
   const ordered = useMemo(() => {
     if (!focus) return reservas;
@@ -64,7 +50,9 @@ export function DigitalPassportList() {
               className="rounded-xl border border-emerald-900/10 bg-white p-2"
             />
             <p className="font-mono text-sm font-semibold tracking-wide">{reserva.codigoQr}</p>
-            <Badge tone={ESTADO_TONE[reserva.estado]}>{ESTADO_LABEL[reserva.estado]}</Badge>
+            <Badge tone={ESTADO_RESERVA_TONE[reserva.estado]}>
+              {ESTADO_RESERVA_LABEL[reserva.estado]}
+            </Badge>
           </div>
 
           <div className="space-y-4">
@@ -116,26 +104,39 @@ export function DigitalPassportList() {
               {reserva.stellarTxHash ? ` · tx ${reserva.stellarTxHash.slice(0, 18)}…` : ""}
             </p>
 
-            {reserva.estado !== "fondos_liberados" && reserva.estado !== "cancelado" ? (
-              <Button variant="outline" onClick={() => marcarEscaneado(reserva.id)}>
-                {reserva.estado === "anticipo_pagado" ? (
-                  <>
-                    <ScanLine className="h-4 w-4" />
-                    Simular escaneo del comerciante
-                  </>
-                ) : (
-                  <>
-                    <ShieldCheck className="h-4 w-4" />
-                    Liberar fondos del escrow
-                  </>
-                )}
+            {reserva.estado === "anticipo_retenido" ? (
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={() => confirmarServicio(reserva.id)}>
+                  <ScanLine className="h-4 w-4" />
+                  Simular escaneo del comerciante
+                </Button>
+                <Button variant="outline" onClick={() => reembolsarAnticipo(reserva.id)}>
+                  <Undo2 className="h-4 w-4" />
+                  Simular reembolso del anticipo
+                </Button>
+              </div>
+            ) : null}
+
+            {reserva.estado === "servicio_confirmado" ? (
+              <Button variant="outline" onClick={() => liberarFondos(reserva.id)}>
+                <ShieldCheck className="h-4 w-4" />
+                Liberar fondos
               </Button>
-            ) : (
+            ) : null}
+
+            {reserva.estado === "fondos_liberados" ? (
               <p className="inline-flex items-center gap-2 text-sm text-emerald-800">
                 <ShieldCheck className="h-4 w-4" />
-                El comerciante ya cobró el anticipo on-chain.
+                El anticipo ya se liberó al comerciante.
               </p>
-            )}
+            ) : null}
+
+            {reserva.estado === "reembolsado" ? (
+              <p className="inline-flex items-center gap-2 text-sm text-rose-700">
+                <Undo2 className="h-4 w-4" />
+                El anticipo volvió al turista.
+              </p>
+            ) : null}
           </div>
         </article>
       ))}

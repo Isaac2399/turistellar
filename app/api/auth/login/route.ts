@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { authenticateDemoUser } from "@/lib/auth/demo-users";
+import { authenticateUser } from "@/lib/auth/local-accounts";
 import { setSession } from "@/lib/auth/session";
 import { safeNextPath } from "@/lib/auth/session-codec";
 
@@ -12,7 +12,15 @@ export async function POST(request: Request) {
 
   const email = body?.email ?? "";
   const password = body?.password ?? "";
-  const user = authenticateDemoUser(email, password);
+  let user;
+  try {
+    user = await authenticateUser(email, password);
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: "No se pudo comprobar la cuenta. Inténtalo de nuevo." },
+      { status: 500 },
+    );
+  }
 
   if (!user) {
     return NextResponse.json({ ok: false, error: "Correo o contraseña incorrectos." }, { status: 401 });

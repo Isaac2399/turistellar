@@ -4,12 +4,12 @@ import { LogIn, LogOut } from "lucide-react";
 import { Badge, Card } from "@/components/ui";
 import {
   CANAL_PAGO_LABEL,
-  ESTADO_PAGO_LABEL,
   formatIsoDate,
   formatMoney,
   type AlojamientoUnidad,
   type ReservaAlojamiento,
 } from "@/lib/mock-merchant-data";
+import { ESTADO_RESERVA_LABEL } from "@/types/estado-reserva";
 
 const TODAY = "2026-09-22";
 
@@ -58,7 +58,7 @@ function StayCard({
         </div>
         <div className="rounded-xl bg-zinc-50 px-3 py-2 dark:bg-zinc-900">
           <dt className="text-xs text-zinc-500">Estado</dt>
-          <dd className="text-sm font-semibold">{ESTADO_PAGO_LABEL[reserva.estadoPago]}</dd>
+          <dd className="text-sm font-semibold">{ESTADO_RESERVA_LABEL[reserva.estadoPago]}</dd>
         </div>
       </dl>
     </li>

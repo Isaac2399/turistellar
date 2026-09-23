@@ -4,20 +4,13 @@ import { useState } from "react";
 import { QrCode } from "lucide-react";
 import { Badge, Button, Card, Dialog } from "@/components/ui";
 import {
-  ESTADO_PAGO_LABEL,
   formatDateTime,
   formatMoney,
-  type EstadoPagoReserva,
   type ReservaComerciante,
 } from "@/lib/mock-merchant-data";
 import { truncatePublicKey } from "@/lib/utils";
+import { ESTADO_RESERVA_LABEL, ESTADO_RESERVA_TONE } from "@/types/estado-reserva";
 import { useMerchant } from "./MerchantProvider";
-
-const PAGO_TONE: Record<EstadoPagoReserva, "amber" | "emerald" | "sky"> = {
-  anticipo_recibido: "amber",
-  pagado_completo: "emerald",
-  pendiente_liberacion: "sky",
-};
 
 function FakeQr({ seed }: { seed: string }) {
   const cells = Array.from({ length: 81 }, (_, index) => {
@@ -58,7 +51,8 @@ export function BookingsList() {
         <p className="text-sm font-medium uppercase tracking-wide text-emerald-800">Liquidación</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight">Reservas y anticipos</h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Anticipo en escrow Stellar y saldo a cobrar al llegar. Escanea el QR para liberar fondos.
+          Anticipo en escrow Stellar y saldo a cobrar al llegar. Liberar fondos solo pasa de{" "}
+          {ESTADO_RESERVA_LABEL.servicio_confirmado} a {ESTADO_RESERVA_LABEL.fondos_liberados}.
         </p>
       </header>
 
@@ -75,8 +69,8 @@ export function BookingsList() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-lg font-semibold">{reserva.turistaNombre}</h2>
-                    <Badge tone={PAGO_TONE[reserva.estadoPago]}>
-                      {ESTADO_PAGO_LABEL[reserva.estadoPago]}
+                    <Badge tone={ESTADO_RESERVA_TONE[reserva.estadoPago]}>
+                      {ESTADO_RESERVA_LABEL[reserva.estadoPago]}
                     </Badge>
                   </div>
                   <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
@@ -92,9 +86,9 @@ export function BookingsList() {
                 </div>
                 <Button
                   onClick={() => openQr(reserva)}
-                  disabled={reserva.estadoPago === "pagado_completo"}
+                  disabled={reserva.estadoPago !== "servicio_confirmado"}
                 >
-                  <QrCode className="h-4 w-4" /> Escanear QR de liberación
+                  <QrCode className="h-4 w-4" /> Liberar fondos
                 </Button>
               </div>
               <dl className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -139,11 +133,15 @@ export function BookingsList() {
             </p>
             {released ? (
               <p className="text-center text-sm font-medium text-emerald-700">
-                Fondos marcados como liberados en esta sesión.
+                {ESTADO_RESERVA_LABEL.fondos_liberados}.
               </p>
             ) : (
-              <Button className="w-full" onClick={confirmRelease}>
-                Confirmar liberación
+              <Button
+                className="w-full"
+                onClick={confirmRelease}
+                disabled={selected.estadoPago !== "servicio_confirmado"}
+              >
+                Liberar fondos
               </Button>
             )}
           </div>

@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local registered accounts (password hashes)
+/.data/
+
+# Soroban / Cargo build output
+/contracts/**/target/

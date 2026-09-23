@@ -3,6 +3,8 @@
  * Keep amounts as strings to stay compatible with Stellar 7-decimal precision.
  */
 
+import type { EstadoReserva } from "@/types/estado-reserva";
+
 export type CategoriaEmpresa = "eco-turismo" | "gastronomia" | "finca";
 
 export type PorcentajeAnticipo = 30 | 50 | 100;
@@ -12,11 +14,6 @@ export type EstadoTurno =
   | "reservado_parcial"
   | "lleno"
   | "bloqueado";
-
-export type EstadoPagoReserva =
-  | "anticipo_recibido"
-  | "pagado_completo"
-  | "pendiente_liberacion";
 
 export type TipoNotificacion = "tour_proximo" | "saldo_pendiente" | "stock_bajo";
 
@@ -98,7 +95,7 @@ export interface ReservaComerciante {
   anticipoPagado: string;
   pendienteCobrar: string;
   assetCode: "USDC" | "XLM";
-  estadoPago: EstadoPagoReserva;
+  estadoPago: EstadoReserva;
   escrowContractId: string;
 }
 
@@ -153,7 +150,7 @@ export interface ReservaAlojamiento {
   saldoPendiente: string;
   assetCode: "USDC" | "XLM" | "USD";
   canalPagoAnticipo: CanalPagoAnticipo;
-  estadoPago: EstadoPagoReserva;
+  estadoPago: EstadoReserva;
   escrowContractId: string;
 }
 
@@ -180,12 +177,6 @@ export const ESTADO_TURNO_LABEL: Record<EstadoTurno, string> = {
   reservado_parcial: "Reservado parcial",
   lleno: "Lleno",
   bloqueado: "Bloqueado / Cerrado",
-};
-
-export const ESTADO_PAGO_LABEL: Record<EstadoPagoReserva, string> = {
-  anticipo_recibido: "Anticipo recibido",
-  pagado_completo: "Pagado completo",
-  pendiente_liberacion: "Pendiente de liberación",
 };
 
 export const TIPO_NOTIFICACION_LABEL: Record<TipoNotificacion, string> = {
@@ -417,7 +408,7 @@ const MOCK_RESERVAS: ReservaComerciante[] = [
     anticipoPagado: "128.75",
     pendienteCobrar: "128.75",
     assetCode: "USDC",
-    estadoPago: "anticipo_recibido",
+    estadoPago: "anticipo_retenido",
     escrowContractId: "CDLUCIAHERESCROWCAFETAL22XXXXXXXXXXXXXXXXXXXXXXX",
   },
   {
@@ -430,7 +421,7 @@ const MOCK_RESERVAS: ReservaComerciante[] = [
     anticipoPagado: "328.00",
     pendienteCobrar: "0.00",
     assetCode: "USDC",
-    estadoPago: "pendiente_liberacion",
+    estadoPago: "servicio_confirmado",
     escrowContractId: "CDMATEORIOSESCROWAMANECER23XXXXXXXXXXXXXXXXXXXX",
   },
   {
@@ -443,7 +434,7 @@ const MOCK_RESERVAS: ReservaComerciante[] = [
     anticipoPagado: "67.50",
     pendienteCobrar: "67.50",
     assetCode: "USDC",
-    estadoPago: "anticipo_recibido",
+    estadoPago: "anticipo_retenido",
     escrowContractId: "CDANASOFIAESCROWCAFETAL26XXXXXXXXXXXXXXXXXXXXXX",
   },
 ];
@@ -584,7 +575,7 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
     saldoPendiente: "77.00",
     assetCode: "USDC",
     canalPagoAnticipo: "fiat",
-    estadoPago: "anticipo_recibido",
+    estadoPago: "anticipo_retenido",
     escrowContractId: "CDDIEGOPENAESCROWMONTANA20XXXXXXXXXXXXXXXXXXXXX",
   },
   {
@@ -599,7 +590,7 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
     saldoPendiente: "127.50",
     assetCode: "USDC",
     canalPagoAnticipo: "stellar",
-    estadoPago: "anticipo_recibido",
+    estadoPago: "anticipo_retenido",
     escrowContractId: "CDCAMILARESTESCOWTRAPICHE22XXXXXXXXXXXXXXXXXXXX",
   },
   {
@@ -614,7 +605,7 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
     saldoPendiente: "360.00",
     assetCode: "USDC",
     canalPagoAnticipo: "stellar",
-    estadoPago: "anticipo_recibido",
+    estadoPago: "anticipo_retenido",
     escrowContractId: "CDHIROSHISATOESCROWCASA24XXXXXXXXXXXXXXXXXXXXXX",
   },
   {
@@ -629,7 +620,7 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
     saldoPendiente: "108.00",
     assetCode: "USDC",
     canalPagoAnticipo: "stellar",
-    estadoPago: "pendiente_liberacion",
+    estadoPago: "servicio_confirmado",
     escrowContractId: "CDVALENTINARUIZESCROWGLAMP26XXXXXXXXXXXXXXXXXXX",
   },
 ];
