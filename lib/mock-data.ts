@@ -44,7 +44,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Cabaña del Trapiche",
     descripcion:
       "Cabaña de guadua junto al trapiche de caña. Terraza con hamacas, cocina campesina y fogón de leña.",
-    empresa: "Finca El Cafetal Ancestral",
+    empresa: "Finca El Roble",
     ubicacion: "Vereda La Esperanza, Salento",
     puntuacion: 4.8,
     resenas: 42,
@@ -65,7 +65,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Habitación Vista a la Montaña",
     descripcion:
       "Habitación privada en la casa principal. Balcón al bosque de niebla y desayuno campesino.",
-    empresa: "Finca El Cafetal Ancestral",
+    empresa: "Finca El Roble",
     ubicacion: "Vereda La Esperanza, Salento",
     puntuacion: 4.6,
     resenas: 28,
@@ -86,7 +86,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Nido de Niebla",
     descripcion:
       "Domo geodésico con cama king y jardín de heliconias. Acepta mascotas pequeñas.",
-    empresa: "Reserva Bosque de Niebla",
+    empresa: "Finca El Roble",
     ubicacion: "Alto de la Palma, Salento",
     puntuacion: 4.9,
     resenas: 61,
@@ -107,7 +107,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Tour del Trapiche de Caña",
     descripcion:
       "Molienda en vivo, jugo de caña y panela. Recorrido de 2.5 h con guía de la finca.",
-    empresa: "Finca El Cafetal Ancestral",
+    empresa: "Finca El Roble",
     ubicacion: "Trapiche La Esperanza",
     puntuacion: 4.9,
     resenas: 87,
@@ -141,7 +141,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Sendero del cafetal y cata de altura",
     descripcion:
       "Cultivo, beneficio húmedo y cata de tres tuestes. Incluye merienda campesina.",
-    empresa: "Finca El Cafetal Ancestral",
+    empresa: "Finca El Roble",
     ubicacion: "Ladera norte, Salento",
     puntuacion: 4.7,
     resenas: 54,
@@ -169,7 +169,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Caminata palmas de cera · Valle de Cocora",
     descripcion:
       "Senderismo guiado entre palmas de cera, mirador y almuerzo campesino en finca.",
-    empresa: "Guías Cocora Rural",
+    empresa: "Finca El Roble",
     ubicacion: "Valle de Cocora",
     puntuacion: 4.8,
     resenas: 119,
@@ -196,7 +196,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Lote de salsas de la casa",
     descripcion:
       "Tres frascos: ají dulce fermentado, hogao de finca y salsa de uchuva. Recogida en tienda.",
-    empresa: "Fogón de Caña",
+    empresa: "Artesanías Valle Verde",
     ubicacion: "Salento centro",
     puntuacion: 4.7,
     resenas: 33,
@@ -223,7 +223,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     categoria: "producto",
     titulo: "Café de altura 250 g · lote norte",
     descripcion: "Tostión media, empaque con válvula. Preorden de 3 días si el stock llega a 0.",
-    empresa: "Finca El Cafetal Ancestral",
+    empresa: "Artesanías Valle Verde",
     ubicacion: "Beneficiadero de la finca",
     puntuacion: 4.9,
     resenas: 76,
@@ -248,7 +248,7 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
     titulo: "Canasta campesina de temporada",
     descripcion:
       "Uchuva, plátano, panela en bloque y queso de finca. Recogida o entrega en el alojamiento.",
-    empresa: "Mercado Vereda La Esperanza",
+    empresa: "Artesanías Valle Verde",
     ubicacion: "Plaza campesina, Filandia",
     puntuacion: 4.5,
     resenas: 21,
@@ -264,56 +264,6 @@ export const OFERTAS_TURISTICAS: readonly OfertaTuristica[] = [
       ["2026-09-24", "10:00", 15, 4],
       ["2026-09-26", "10:00", 15, 0],
     ]),
-  },
-  {
-    id: "pkg-cafetal",
-    categoria: "paquete",
-    titulo: "Fin de semana Cafetal + Trapiche",
-    descripcion:
-      "2 noches en cabaña, tour del trapiche (10:30) y lote de salsas. Ruta conectada en el mapa.",
-    empresa: "Finca El Cafetal Ancestral",
-    ubicacion: "Corredor Salento rural",
-    puntuacion: 4.8,
-    resenas: 18,
-    precioUsd: "248.00",
-    unidadPrecio: "paquete",
-    porcentajeAnticipo: 50,
-    imagenUrl:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-    coordenadas: { lat: 4.6285, lng: -75.5602 },
-    horarios: [{ dias: DIAS_OPERACION, abre: "08:00", cierra: "18:00" }],
-    duracionMinutos: 2880,
-    capacidad: 4,
-    turnos: turnos([
-      ["2026-09-24", "15:00", 2, 0],
-      ["2026-09-25", "15:00", 2, 1],
-    ]),
-    incluyeIds: ["alo-trapiche", "tour-trapiche", "prod-salsas"],
-  },
-  {
-    id: "pkg-cocora",
-    categoria: "paquete",
-    titulo: "Niebla, palmas y canasta",
-    descripcion:
-      "Noche en el Nido de Niebla, caminata Cocora al amanecer y canasta campesina en Filandia.",
-    empresa: "Guías Cocora Rural",
-    ubicacion: "Cocora · Filandia",
-    puntuacion: 4.9,
-    resenas: 12,
-    precioUsd: "196.00",
-    unidadPrecio: "paquete",
-    porcentajeAnticipo: 50,
-    imagenUrl:
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",
-    coordenadas: { lat: 4.655, lng: -75.54 },
-    horarios: [{ dias: DIAS_SEMANA, abre: "06:00", cierra: "18:00" }],
-    duracionMinutos: 1440,
-    capacidad: 2,
-    turnos: turnos([
-      ["2026-09-25", "15:00", 2, 0],
-      ["2026-09-27", "15:00", 2, 0],
-    ]),
-    incluyeIds: ["alo-glamping", "tour-cocora", "prod-canasta"],
   },
 ];
 

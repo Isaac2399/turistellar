@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 export default async function MerchantLayout({
   children,
 }: LayoutProps<"/dashboard/merchant">) {
-  await requireComerciante("/dashboard/merchant");
-  return <MerchantShell>{children}</MerchantShell>;
+  const session = await requireComerciante("/dashboard/merchant");
+  return <MerchantShell merchantId={session.id}>{children}</MerchantShell>;
 }

@@ -154,7 +154,10 @@ export interface ReservaAlojamiento {
   escrowContractId: string;
 }
 
+export type CatalogoEmpresa = "estadia-tours" | "productos";
+
 export interface MerchantSnapshot {
+  catalogo: CatalogoEmpresa;
   perfil: PerfilEmpresa;
   tours: TourComerciante[];
   productos: ProductoArtesanal[];
@@ -255,23 +258,44 @@ export function nextEstadoNoche(current: EstadoNocheAlojamiento): EstadoNocheAlo
   return CICLO_ESTADO_NOCHE[(index + 1) % CICLO_ESTADO_NOCHE.length];
 }
 
-const MOCK_PERFIL: PerfilEmpresa = {
-  nombreComercial: "Finca El Cafetal Ancestral",
+const PERFIL_ROBLE: PerfilEmpresa = {
+  nombreComercial: "Finca El Roble",
   descripcion:
-    "Finca familiar en el Eje Cafetero. Caminatas por el bosque de niebla, degustación de café de altura y preórdenes de salsas, panela y café tostado en lote pequeño.",
-  categorias: ["eco-turismo", "finca", "gastronomia"],
+    "Estadía y tours en el Eje Cafetero. Cabañas, sendero del cafetal y caminata al Valle de Cocora. Esta cuenta no vende productos.",
+  categorias: ["eco-turismo", "finca"],
   logoUrl: "",
   ubicacion: "Vereda La Esperanza, Salento, Quindío",
   whatsapp: "573001234567",
   stellarWallet: "GDRXE2BQUC3AZB4BXQYDMEGQSZA3QC4GZBXNLMRSKXGBJQ5J2V2XAAAA",
 };
 
-const MOCK_TOURS: TourComerciante[] = [
+const PERFIL_VALLE: PerfilEmpresa = {
+  nombreComercial: "Artesanías Valle Verde",
+  descripcion:
+    "Productos de finca para recoger en el viaje: salsas, café y canasta campesina. Esta cuenta no ofrece estadía ni tours.",
+  categorias: ["gastronomia"],
+  logoUrl: "",
+  ubicacion: "Salento centro, Quindío",
+  whatsapp: "573009876543",
+  stellarWallet: "GARTESANIAVALLEVERDESTELLARWALLETXXXXXXXXXXXXXXXXXXXX",
+};
+
+const TOURS_ROBLE: TourComerciante[] = [
+  {
+    id: "tour-trapiche",
+    titulo: "Tour del Trapiche de Caña",
+    descripcion: "Molienda en vivo, jugo de caña y panela. Recorrido de 2.5 h con guía de la finca.",
+    duracionMinutos: 150,
+    precioPorPersona: "38.00",
+    cupoMaximo: 8,
+    porcentajeAnticipo: 30,
+    activo: true,
+  },
   {
     id: "tour-cafetal",
     titulo: "Sendero del cafetal y cata de altura",
     descripcion:
-      "Recorrido guiado por el cultivo, proceso húmedo y cata de tres perfiles de tueste. Incluye merienda campesina.",
+      "Cultivo, beneficio húmedo y cata de tres tuestes. Incluye merienda campesina.",
     duracionMinutos: 180,
     precioPorPersona: "45.00",
     cupoMaximo: 8,
@@ -279,163 +303,145 @@ const MOCK_TOURS: TourComerciante[] = [
     activo: true,
   },
   {
-    id: "tour-gastronomia",
-    titulo: "Fogón de caña y salsas de la casa",
-    descripcion:
-      "Taller de salsas, arepas de chócolo y dulce de caña con la familia anfitriona. Cupo reducido.",
-    duracionMinutos: 150,
-    precioPorPersona: "38.00",
-    cupoMaximo: 6,
-    porcentajeAnticipo: 30,
-    activo: true,
-  },
-  {
-    id: "tour-amanecer",
-    titulo: "Amanecer en el bosque de niebla",
-    descripcion:
-      "Salida a las 5:30 a.m. para avistamiento de aves y desayuno en el mirador. Anticipo completo por logística.",
-    duracionMinutos: 240,
-    precioPorPersona: "62.00",
-    cupoMaximo: 5,
-    porcentajeAnticipo: 100,
+    id: "tour-cocora",
+    titulo: "Caminata palmas de cera · Valle de Cocora",
+    descripcion: "Senderismo guiado entre palmas de cera, mirador y almuerzo campesino en finca.",
+    duracionMinutos: 300,
+    precioPorPersona: "52.00",
+    cupoMaximo: 12,
+    porcentajeAnticipo: 50,
     activo: true,
   },
 ];
 
-const MOCK_PRODUCTOS: ProductoArtesanal[] = [
+const PRODUCTOS_VALLE: ProductoArtesanal[] = [
   {
-    id: "prod-salsa",
-    nombre: "Salsa de ají de la casa",
-    descripcion: "Ají dulce fermentado con panela. Frasco de 250 ml.",
-    precio: "8.50",
-    stock: 18,
+    id: "prod-salsas",
+    nombre: "Lote de salsas de la casa",
+    descripcion: "Tres frascos: ají dulce fermentado, hogao de finca y salsa de uchuva.",
+    precio: "22.00",
+    stock: 12,
     imagenUrl: "",
     diasPreorden: 0,
     activo: true,
   },
   {
-    id: "prod-dulce",
-    nombre: "Dulce de caña en bloque",
-    descripcion: "Panela artesanal de caña criolla. Bloque de 500 g.",
-    precio: "6.00",
-    stock: 4,
-    imagenUrl: "",
-    diasPreorden: 2,
-    activo: true,
-  },
-  {
     id: "prod-cafe",
-    nombre: "Café de altura 250 g",
-    descripcion: "Tostión media, lote de la ladera norte. Empaque con válvula.",
+    nombre: "Café de altura 250 g · lote norte",
+    descripcion: "Tostión media, empaque con válvula.",
     precio: "12.00",
     stock: 9,
     imagenUrl: "",
     diasPreorden: 3,
     activo: true,
   },
+  {
+    id: "prod-canasta",
+    nombre: "Canasta campesina de temporada",
+    descripcion: "Uchuva, plátano, panela en bloque y queso de finca.",
+    precio: "18.50",
+    stock: 3,
+    imagenUrl: "",
+    diasPreorden: 1,
+    activo: true,
+  },
 ];
 
-const MOCK_TURNOS: TurnoCalendario[] = [
+const TURNOS_ROBLE: TurnoCalendario[] = [
   {
-    id: "turno-0922-am",
-    fecha: "2026-09-22",
-    hora: "08:00",
-    tourId: "tour-cafetal",
-    estado: "reservado_parcial",
-    cuposOcupados: 5,
-  },
-  {
-    id: "turno-0922-pm",
-    fecha: "2026-09-22",
+    id: "turno-0924-trapiche",
+    fecha: "2026-09-24",
     hora: "14:00",
-    tourId: "tour-gastronomia",
-    estado: "disponible",
-    cuposOcupados: 0,
+    tourId: "tour-trapiche",
+    estado: "reservado_parcial",
+    cuposOcupados: 2,
   },
   {
-    id: "turno-0923-am",
-    fecha: "2026-09-23",
-    hora: "05:30",
-    tourId: "tour-amanecer",
-    estado: "lleno",
-    cuposOcupados: 5,
-  },
-  {
-    id: "turno-0924-am",
+    id: "turno-0924-cafetal",
     fecha: "2026-09-24",
     hora: "08:00",
     tourId: "tour-cafetal",
-    estado: "disponible",
-    cuposOcupados: 0,
-  },
-  {
-    id: "turno-0925-pm",
-    fecha: "2026-09-25",
-    hora: "14:00",
-    tourId: "tour-gastronomia",
-    estado: "bloqueado",
-    cuposOcupados: 0,
-  },
-  {
-    id: "turno-0926-am",
-    fecha: "2026-09-26",
-    hora: "08:00",
-    tourId: "tour-cafetal",
     estado: "reservado_parcial",
-    cuposOcupados: 3,
+    cuposOcupados: 1,
   },
   {
-    id: "turno-0927-am",
-    fecha: "2026-09-27",
-    hora: "05:30",
-    tourId: "tour-amanecer",
+    id: "turno-0925-cocora",
+    fecha: "2026-09-25",
+    hora: "06:30",
+    tourId: "tour-cocora",
     estado: "disponible",
     cuposOcupados: 0,
   },
 ];
 
-const MOCK_RESERVAS: ReservaComerciante[] = [
+const RESERVAS_ROBLE: ReservaComerciante[] = [
   {
-    id: "res-1001",
-    turistaNombre: "Lucía Herrera",
-    fechaHora: "2026-09-22T08:00:00-05:00",
-    tourId: "tour-cafetal",
-    productos: [
-      { productoId: "prod-cafe", cantidad: 2 },
-      { productoId: "prod-salsa", cantidad: 1 },
-    ],
-    montoTotal: "257.50",
-    anticipoPagado: "128.75",
-    pendienteCobrar: "128.75",
-    assetCode: "USDC",
-    estadoPago: "anticipo_retenido",
-    escrowContractId: "CDLUCIAHERESCROWCAFETAL22XXXXXXXXXXXXXXXXXXXXXXX",
-  },
-  {
-    id: "res-1002",
+    id: "res-trapiche",
     turistaNombre: "Mateo Ríos",
-    fechaHora: "2026-09-23T05:30:00-05:00",
-    tourId: "tour-amanecer",
-    productos: [{ productoId: "prod-dulce", cantidad: 3 }],
-    montoTotal: "328.00",
-    anticipoPagado: "328.00",
-    pendienteCobrar: "0.00",
+    fechaHora: "2026-09-24T14:00:00-05:00",
+    tourId: "tour-trapiche",
+    productos: [],
+    montoTotal: "76.00",
+    anticipoPagado: "22.80",
+    pendienteCobrar: "53.20",
     assetCode: "USDC",
     estadoPago: "servicio_confirmado",
-    escrowContractId: "CDMATEORIOSESCROWAMANECER23XXXXXXXXXXXXXXXXXXXX",
+    escrowContractId: "CDMATEORIOSESCROWTRAPICHE24XXXXXXXXXXXXXXXXXXXX",
   },
   {
-    id: "res-1003",
+    id: "res-cafetal",
     turistaNombre: "Ana Sofía Vargas",
-    fechaHora: "2026-09-26T08:00:00-05:00",
+    fechaHora: "2026-09-24T08:00:00-05:00",
     tourId: "tour-cafetal",
     productos: [],
-    montoTotal: "135.00",
-    anticipoPagado: "67.50",
-    pendienteCobrar: "67.50",
+    montoTotal: "45.00",
+    anticipoPagado: "22.50",
+    pendienteCobrar: "22.50",
     assetCode: "USDC",
     estadoPago: "anticipo_retenido",
-    escrowContractId: "CDANASOFIAESCROWCAFETAL26XXXXXXXXXXXXXXXXXXXXXX",
+    escrowContractId: "CDANASOFIAESCROWCAFETAL24XXXXXXXXXXXXXXXXXXXXXX",
+  },
+];
+
+const RESERVAS_VALLE: ReservaComerciante[] = [
+  {
+    id: "res-salsas",
+    turistaNombre: "Lucía Herrera",
+    fechaHora: "2026-09-24T11:00:00-05:00",
+    tourId: "",
+    productos: [{ productoId: "prod-salsas", cantidad: 1 }],
+    montoTotal: "22.00",
+    anticipoPagado: "6.60",
+    pendienteCobrar: "15.40",
+    assetCode: "USDC",
+    estadoPago: "anticipo_retenido",
+    escrowContractId: "CDLUCIAHERESCROWSALSAS24XXXXXXXXXXXXXXXXXXXXXXX",
+  },
+  {
+    id: "res-cafe",
+    turistaNombre: "Diego Peña",
+    fechaHora: "2026-09-24T09:00:00-05:00",
+    tourId: "",
+    productos: [{ productoId: "prod-cafe", cantidad: 2 }],
+    montoTotal: "24.00",
+    anticipoPagado: "12.00",
+    pendienteCobrar: "12.00",
+    assetCode: "USDC",
+    estadoPago: "servicio_confirmado",
+    escrowContractId: "CDDIEGOPENAESCROWCAFE24XXXXXXXXXXXXXXXXXXXXXXX",
+  },
+  {
+    id: "res-canasta",
+    turistaNombre: "Camila Restrepo",
+    fechaHora: "2026-09-26T10:00:00-05:00",
+    tourId: "",
+    productos: [{ productoId: "prod-canasta", cantidad: 2 }],
+    montoTotal: "37.00",
+    anticipoPagado: "11.10",
+    pendienteCobrar: "25.90",
+    assetCode: "USDC",
+    estadoPago: "anticipo_retenido",
+    escrowContractId: "CDCAMILARESTESCROWCANASTA26XXXXXXXXXXXXXXXXXXX",
   },
 ];
 
@@ -506,30 +512,6 @@ const MOCK_ALOJAMIENTOS: AlojamientoUnidad[] = [
     escrowGarantiaActivo: true,
     activo: true,
   },
-  {
-    id: "alo-casa",
-    nombre: "Casa de Campo La Esperanza",
-    descripcion:
-      "Residencia completa de dos plantas para familias. Sala con chimenea, cocina equipada, huerta y corredor de geranios.",
-    tipo: "casa_de_campo",
-    capacidadHuespedes: 8,
-    camas: [
-      { tipo: "matrimonial", cantidad: 2 },
-      { tipo: "nido_litera", cantidad: 2 },
-    ],
-    numeroBanos: 2,
-    tipoBano: "privado",
-    amenidades: ["wifi", "desayuno", "parqueo", "cocina", "mascotas", "agua_caliente"],
-    galeriaUrls: [
-      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
-    ],
-    precioPorNoche: "180.00",
-    porcentajeAnticipo: 50,
-    depositoGarantia: "200.00",
-    escrowGarantiaActivo: true,
-    activo: true,
-  },
 ];
 
 function noche(
@@ -545,41 +527,19 @@ function noche(
   };
 }
 
-const MOCK_NOCHES_ALOJAMIENTO: NocheOcupacion[] = [
-  noche("alo-montana", "2026-09-20", "reservada_anticipo"),
-  noche("alo-montana", "2026-09-21", "reservada_anticipo"),
+const NOCHES_ROBLE: NocheOcupacion[] = [
   noche("alo-montana", "2026-09-25", "bloqueada"),
   noche("alo-trapiche", "2026-09-22", "reservada_anticipo"),
   noche("alo-trapiche", "2026-09-23", "reservada_anticipo"),
   noche("alo-trapiche", "2026-09-24", "reservada_anticipo"),
-  noche("alo-trapiche", "2026-09-27", "bloqueada"),
-  noche("alo-casa", "2026-09-24", "reservada_anticipo"),
-  noche("alo-casa", "2026-09-25", "reservada_anticipo"),
-  noche("alo-casa", "2026-09-26", "reservada_anticipo"),
-  noche("alo-casa", "2026-09-27", "reservada_anticipo"),
   noche("alo-glamping", "2026-09-26", "reservada_anticipo"),
   noche("alo-glamping", "2026-09-27", "reservada_anticipo"),
   noche("alo-glamping", "2026-09-28", "reservada_anticipo"),
 ];
 
-const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
+const RESERVAS_ALOJAMIENTO_ROBLE: ReservaAlojamiento[] = [
   {
-    id: "stay-2001",
-    huespedNombre: "Diego Peña",
-    unidadId: "alo-montana",
-    checkIn: "2026-09-20",
-    checkOut: "2026-09-22",
-    noches: 2,
-    personas: 2,
-    anticipoPagado: "33.00",
-    saldoPendiente: "77.00",
-    assetCode: "USDC",
-    canalPagoAnticipo: "fiat",
-    estadoPago: "anticipo_retenido",
-    escrowContractId: "CDDIEGOPENAESCROWMONTANA20XXXXXXXXXXXXXXXXXXXXX",
-  },
-  {
-    id: "stay-2002",
+    id: "stay-trapiche",
     huespedNombre: "Camila Restrepo",
     unidadId: "alo-trapiche",
     checkIn: "2026-09-22",
@@ -594,22 +554,7 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
     escrowContractId: "CDCAMILARESTESCOWTRAPICHE22XXXXXXXXXXXXXXXXXXXX",
   },
   {
-    id: "stay-2003",
-    huespedNombre: "Hiroshi Sato",
-    unidadId: "alo-casa",
-    checkIn: "2026-09-24",
-    checkOut: "2026-09-28",
-    noches: 4,
-    personas: 6,
-    anticipoPagado: "360.00",
-    saldoPendiente: "360.00",
-    assetCode: "USDC",
-    canalPagoAnticipo: "stellar",
-    estadoPago: "anticipo_retenido",
-    escrowContractId: "CDHIROSHISATOESCROWCASA24XXXXXXXXXXXXXXXXXXXXXX",
-  },
-  {
-    id: "stay-2004",
+    id: "stay-glamping",
     huespedNombre: "Valentina Ruiz",
     unidadId: "alo-glamping",
     checkIn: "2026-09-26",
@@ -625,59 +570,101 @@ const MOCK_RESERVAS_ALOJAMIENTO: ReservaAlojamiento[] = [
   },
 ];
 
-const MOCK_NOTIFICACIONES: NotificacionComerciante[] = [
+const NOTIFICACIONES_ROBLE: NotificacionComerciante[] = [
   {
-    id: "ntf-01",
+    id: "ntf-roble-tour",
     tipo: "tour_proximo",
-    titulo: "Mañana tienes un tour con 5 personas",
+    titulo: "Trapiche el 24 sep, 2 personas",
     mensaje:
-      "Sendero del cafetal (22 sep, 08:00). Prepara insumos de cata, merienda y 2 paquetes de café preordenados.",
+      "Mateo Ríos pagó anticipo USDC 22.80 (30% de USDC 76.00). Al llegar cobra USDC 53.20.",
     leida: false,
-    createdAt: "2026-09-21T09:15:00-05:00",
+    createdAt: "2026-09-22T08:00:00-05:00",
   },
   {
-    id: "ntf-02",
+    id: "ntf-roble-stay",
     tipo: "saldo_pendiente",
-    titulo: "Saldo por cobrar al llegar",
+    titulo: "Saldo de la Cabaña del Trapiche",
     mensaje:
-      "Lucía Herrera deja USDC 128.75 pendientes al finalizar el sendero. Ana Sofía Vargas deja USDC 67.50.",
+      "Camila Restrepo: 3 noches × USDC 85.00 = USDC 255.00. Anticipo 50% USDC 127.50. Saldo USDC 127.50.",
     leida: false,
-    createdAt: "2026-09-21T08:40:00-05:00",
-  },
-  {
-    id: "ntf-03",
-    tipo: "stock_bajo",
-    titulo: "Stock bajo: dulce de caña",
-    mensaje:
-      "Quedan 4 bloques de dulce de caña. Hay una preorden de 3 unidades para el 23 sep.",
-    leida: false,
-    createdAt: "2026-09-20T16:05:00-05:00",
-  },
-  {
-    id: "ntf-04",
-    tipo: "tour_proximo",
-    titulo: "Tour de amanecer el 23 sep",
-    mensaje:
-      "Grupo lleno (5/5). Anticipo al 100%. Recuerda escanear el QR de liberación al cierre.",
-    leida: true,
-    createdAt: "2026-09-20T11:00:00-05:00",
+    createdAt: "2026-09-22T07:30:00-05:00",
   },
 ];
 
-export const MOCK_MERCHANT: MerchantSnapshot = {
-  perfil: MOCK_PERFIL,
-  tours: MOCK_TOURS,
-  productos: MOCK_PRODUCTOS,
-  turnos: MOCK_TURNOS,
-  reservas: MOCK_RESERVAS,
-  notificaciones: MOCK_NOTIFICACIONES,
+const NOTIFICACIONES_VALLE: NotificacionComerciante[] = [
+  {
+    id: "ntf-valle-cafe",
+    tipo: "saldo_pendiente",
+    titulo: "Café listo para liberar",
+    mensaje:
+      "Diego Peña: 2 × USDC 12.00 = USDC 24.00. Anticipo 50% USDC 12.00. Saldo USDC 12.00. El servicio ya está confirmado.",
+    leida: false,
+    createdAt: "2026-09-22T09:10:00-05:00",
+  },
+  {
+    id: "ntf-valle-stock",
+    tipo: "stock_bajo",
+    titulo: "Stock bajo: canasta campesina",
+    mensaje: "Quedan 3 canastas. Camila Restrepo apartó 2 con anticipo USDC 11.10.",
+    leida: false,
+    createdAt: "2026-09-22T09:20:00-05:00",
+  },
+];
+
+const SNAPSHOT_ROBLE: MerchantSnapshot = {
+  catalogo: "estadia-tours",
+  perfil: PERFIL_ROBLE,
+  tours: TOURS_ROBLE,
+  productos: [],
+  turnos: TURNOS_ROBLE,
+  reservas: RESERVAS_ROBLE,
+  notificaciones: NOTIFICACIONES_ROBLE,
   alojamientos: MOCK_ALOJAMIENTOS,
-  nochesAlojamiento: MOCK_NOCHES_ALOJAMIENTO,
-  reservasAlojamiento: MOCK_RESERVAS_ALOJAMIENTO,
+  nochesAlojamiento: NOCHES_ROBLE,
+  reservasAlojamiento: RESERVAS_ALOJAMIENTO_ROBLE,
 };
 
-export function cloneMerchantSnapshot(): MerchantSnapshot {
-  return structuredClone(MOCK_MERCHANT);
+const SNAPSHOT_VALLE: MerchantSnapshot = {
+  catalogo: "productos",
+  perfil: PERFIL_VALLE,
+  tours: [],
+  productos: PRODUCTOS_VALLE,
+  turnos: [],
+  reservas: RESERVAS_VALLE,
+  notificaciones: NOTIFICACIONES_VALLE,
+  alojamientos: [],
+  nochesAlojamiento: [],
+  reservasAlojamiento: [],
+};
+
+const SNAPSHOTS: Record<string, MerchantSnapshot> = {
+  usr_comercio_roble: SNAPSHOT_ROBLE,
+  usr_comercio_valle: SNAPSHOT_VALLE,
+};
+
+const SNAPSHOT_VACIO: MerchantSnapshot = {
+  catalogo: "estadia-tours",
+  perfil: {
+    nombreComercial: "Empresa",
+    descripcion: "",
+    categorias: ["finca"],
+    logoUrl: "",
+    ubicacion: "",
+    whatsapp: "",
+    stellarWallet: "",
+  },
+  tours: [],
+  productos: [],
+  turnos: [],
+  reservas: [],
+  notificaciones: [],
+  alojamientos: [],
+  nochesAlojamiento: [],
+  reservasAlojamiento: [],
+};
+
+export function cloneMerchantSnapshot(merchantId = "usr_comercio_roble"): MerchantSnapshot {
+  return structuredClone(SNAPSHOTS[merchantId] ?? SNAPSHOT_VACIO);
 }
 
 export function addMoney(a: string, b: string): string {

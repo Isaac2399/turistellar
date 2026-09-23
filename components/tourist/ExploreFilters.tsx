@@ -10,7 +10,6 @@ const FILTERS: { id: CategoriaOferta | "todas"; label: string }[] = [
   { id: "alojamiento", label: CATEGORIA_OFERTA_LABEL.alojamiento },
   { id: "tour", label: CATEGORIA_OFERTA_LABEL.tour },
   { id: "producto", label: CATEGORIA_OFERTA_LABEL.producto },
-  { id: "paquete", label: CATEGORIA_OFERTA_LABEL.paquete },
 ];
 
 const ICONS: Record<CategoriaOferta, typeof BedDouble> = {

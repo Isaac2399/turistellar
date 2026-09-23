@@ -15,13 +15,16 @@ import { useMerchant } from "./MerchantProvider";
 export function MerchantDashboard() {
   const {
     perfil,
+    catalogo,
     upcomingToursCount,
     totalAnticipos,
     totalPendiente,
     alertasPendientes,
     reservas,
+    reservasAlojamiento,
     turnos,
     tours,
+    productos,
     notificaciones,
   } = useMerchant();
 
@@ -46,9 +49,15 @@ export function MerchantDashboard() {
         <Card>
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-zinc-500">Próximos tours</p>
-              <p className="mt-2 text-3xl font-semibold">{upcomingToursCount}</p>
-              <p className="mt-1 text-xs text-zinc-500">Turnos parciales o llenos</p>
+              <p className="text-sm text-zinc-500">
+                {catalogo === "productos" ? "Pedidos con anticipo" : "Próximos tours"}
+              </p>
+              <p className="mt-2 text-3xl font-semibold">
+                {catalogo === "productos" ? reservas.length : upcomingToursCount}
+              </p>
+              <p className="mt-1 text-xs text-zinc-500">
+                {catalogo === "productos" ? "Solo productos de la tienda" : "Turnos parciales o llenos"}
+              </p>
             </div>
             <span className="rounded-full bg-emerald-100 p-2 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
               <CalendarClock className="h-5 w-5" />
@@ -87,18 +96,32 @@ export function MerchantDashboard() {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <div>
-              <CardTitle>Turnos con ocupación</CardTitle>
-              <CardDescription>Calendario de los próximos grupos confirmados.</CardDescription>
+              <CardTitle>
+                {catalogo === "productos" ? "Sin tours" : "Turnos con ocupación"}
+              </CardTitle>
+              <CardDescription>
+                {catalogo === "productos"
+                  ? "Los cobros de esta cuenta son solo de productos."
+                  : "Calendario de los próximos grupos confirmados."}
+              </CardDescription>
             </div>
-            <Link
-              href="/dashboard/merchant/calendario"
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
-            >
-              Ver calendario <ArrowRight className="h-4 w-4" />
-            </Link>
+            {catalogo === "estadia-tours" ? (
+              <Link
+                href="/dashboard/merchant/calendario"
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              >
+                Ver calendario <ArrowRight className="h-4 w-4" />
+              </Link>
+            ) : null}
           </CardHeader>
           <ul className="space-y-3">
-            {proximos.map((turno) => {
+            {catalogo === "productos" ? (
+              <li className="text-sm text-zinc-500">Esta cuenta no tiene turnos de tour.</li>
+            ) : proximos.length === 0 ? (
+              <li className="text-sm text-zinc-500">No hay turnos ocupados.</li>
+            ) : null}
+            {catalogo === "estadia-tours"
+              ? proximos.map((turno) => {
               const tour = tours.find((item) => item.id === turno.tourId);
               return (
                 <li
@@ -116,7 +139,8 @@ export function MerchantDashboard() {
                   </Badge>
                 </li>
               );
-            })}
+            })
+              : null}
           </ul>
         </Card>
 
@@ -134,15 +158,37 @@ export function MerchantDashboard() {
             </Link>
           </CardHeader>
           <ul className="space-y-3">
-            {reservas.slice(0, 3).map((reserva) => (
+            {reservas.slice(0, 3).map((reserva) => {
+              const tour = tours.find((item) => item.id === reserva.tourId);
+              const producto = productos.find((item) => item.id === reserva.productos[0]?.productoId);
+              return (
+                <li
+                  key={reserva.id}
+                  className="flex items-center justify-between rounded-xl border border-emerald-900/10 px-3 py-2 dark:border-white/10"
+                >
+                  <div>
+                    <p className="font-medium">{reserva.turistaNombre}</p>
+                    <p className="text-xs text-zinc-500">
+                      {tour?.titulo ?? producto?.nombre ?? "Cobro"} · anticipo{" "}
+                      {formatMoney(reserva.anticipoPagado, reserva.assetCode)} · pendiente{" "}
+                      {formatMoney(reserva.pendienteCobrar, reserva.assetCode)}
+                    </p>
+                  </div>
+                  <Wallet className="h-4 w-4 text-emerald-700" />
+                </li>
+              );
+            })}
+            {reservasAlojamiento.slice(0, 2).map((reserva) => (
               <li
                 key={reserva.id}
                 className="flex items-center justify-between rounded-xl border border-emerald-900/10 px-3 py-2 dark:border-white/10"
               >
                 <div>
-                  <p className="font-medium">{reserva.turistaNombre}</p>
+                  <p className="font-medium">{reserva.huespedNombre}</p>
                   <p className="text-xs text-zinc-500">
-                    Anticipo {formatMoney(reserva.anticipoPagado, reserva.assetCode)}
+                    Estadía {reserva.noches} noches · anticipo{" "}
+                    {formatMoney(reserva.anticipoPagado, reserva.assetCode)} · saldo{" "}
+                    {formatMoney(reserva.saldoPendiente, reserva.assetCode)}
                   </p>
                 </div>
                 <Wallet className="h-4 w-4 text-emerald-700" />

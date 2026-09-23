@@ -38,8 +38,18 @@ function isActivePath(pathname: string, href: string): boolean {
 
 export function MerchantSidebar() {
   const pathname = usePathname();
-  const { alertasPendientes, perfil } = useMerchant();
+  const { alertasPendientes, perfil, catalogo } = useMerchant();
   const [open, setOpen] = useState(false);
+  const items = NAV_ITEMS.filter((item) => {
+    if (catalogo === "productos") {
+      return (
+        item.href !== "/dashboard/merchant/tours" &&
+        item.href !== "/dashboard/merchant/alojamiento" &&
+        item.href !== "/dashboard/merchant/calendario"
+      );
+    }
+    return item.href !== "/dashboard/merchant/productos";
+  });
 
   return (
     <>
@@ -68,7 +78,7 @@ export function MerchantSidebar() {
           {perfil.nombreComercial}
         </h2>
         <nav className="flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => {
+          {items.map((item) => {
             const active = isActivePath(pathname, item.href);
             const Icon = item.icon;
             const showBadge = item.href.endsWith("/notificaciones") && alertasPendientes > 0;

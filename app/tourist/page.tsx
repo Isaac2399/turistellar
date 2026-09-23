@@ -14,7 +14,7 @@ export default function TouristHubPage() {
           className="rounded-2xl border border-emerald-900/10 p-5 hover:bg-emerald-50 dark:border-white/10 dark:hover:bg-emerald-950"
         >
           <h2 className="font-semibold">Explorar</h2>
-          <p className="mt-1 text-sm text-zinc-500">Alojamiento, tours, productos y paquetes.</p>
+          <p className="mt-1 text-sm text-zinc-500">Alojamiento, tours y productos.</p>
         </Link>
         <Link
           href="/tourist/mis-reservas"

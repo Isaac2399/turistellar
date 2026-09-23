@@ -51,8 +51,14 @@ type MerchantContextValue = MerchantSnapshot & {
 
 const MerchantContext = createContext<MerchantContextValue | null>(null);
 
-export function MerchantProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<MerchantSnapshot>(() => cloneMerchantSnapshot());
+export function MerchantProvider({
+  merchantId,
+  children,
+}: {
+  merchantId: string;
+  children: ReactNode;
+}) {
+  const [state, setState] = useState<MerchantSnapshot>(() => cloneMerchantSnapshot(merchantId));
 
   const savePerfil = useCallback((perfil: PerfilEmpresa) => {
     setState((prev) => ({ ...prev, perfil }));
@@ -241,15 +247,23 @@ export function MerchantProvider({ children }: { children: ReactNode }) {
     [state.turnos],
   );
 
-  const totalAnticipos = useMemo(
-    () => state.reservas.reduce((sum, reserva) => addMoney(sum, reserva.anticipoPagado), "0.00"),
-    [state.reservas],
-  );
+  const totalAnticipos = useMemo(() => {
+    const tours = state.reservas.reduce((sum, reserva) => addMoney(sum, reserva.anticipoPagado), "0.00");
+    const estadia = state.reservasAlojamiento.reduce(
+      (sum, reserva) => addMoney(sum, reserva.anticipoPagado),
+      "0.00",
+    );
+    return addMoney(tours, estadia);
+  }, [state.reservas, state.reservasAlojamiento]);
 
-  const totalPendiente = useMemo(
-    () => state.reservas.reduce((sum, reserva) => addMoney(sum, reserva.pendienteCobrar), "0.00"),
-    [state.reservas],
-  );
+  const totalPendiente = useMemo(() => {
+    const tours = state.reservas.reduce((sum, reserva) => addMoney(sum, reserva.pendienteCobrar), "0.00");
+    const estadia = state.reservasAlojamiento.reduce(
+      (sum, reserva) => addMoney(sum, reserva.saldoPendiente),
+      "0.00",
+    );
+    return addMoney(tours, estadia);
+  }, [state.reservas, state.reservasAlojamiento]);
 
   const alertasPendientes = useMemo(
     () => state.notificaciones.filter((item) => !item.leida).length,

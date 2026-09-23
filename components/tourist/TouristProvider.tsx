@@ -25,8 +25,9 @@ import type {
 } from "@/types/tourist";
 import { buildDesglose } from "@/lib/itinerary";
 
-const ITINERARY_KEY = "turistellar.itinerary";
-const RESERVAS_KEY = "turistellar.reservas";
+const ITINERARY_KEY = "turistellar.itinerary.v2";
+const RESERVAS_KEY = "turistellar.reservas.v2";
+const LEGACY_KEYS = ["turistellar.itinerary", "turistellar.reservas"] as const;
 
 interface TouristContextValue {
   items: ItineraryItem[];
@@ -70,6 +71,7 @@ export function TouristProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    for (const key of LEGACY_KEYS) localStorage.removeItem(key);
     setItems(readJson<ItineraryItem[]>(ITINERARY_KEY, []));
     setReservas(
       readJson<PasaporteReserva[]>(RESERVAS_KEY, []).map((row) => ({

@@ -76,13 +76,16 @@ export function BookingsList() {
                   <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     {formatDateTime(reserva.fechaHora)}
                   </p>
-                  <p className="mt-2 text-sm">
-                    <span className="font-medium">Tour:</span> {tour?.titulo ?? reserva.tourId}
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-medium">Productos:</span>{" "}
-                    {productLines.length > 0 ? productLines.join(", ") : "Sin add-ons"}
-                  </p>
+                  {tour ? (
+                    <p className="mt-2 text-sm">
+                      <span className="font-medium">Tour:</span> {tour.titulo}
+                    </p>
+                  ) : null}
+                  {productLines.length > 0 ? (
+                    <p className="text-sm">
+                      <span className="font-medium">Productos:</span> {productLines.join(", ")}
+                    </p>
+                  ) : null}
                 </div>
                 <Button
                   onClick={() => openQr(reserva)}
