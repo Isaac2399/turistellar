@@ -33,7 +33,7 @@ Any account can submit the transaction. The signature the contract requires is t
 
 `lib/soroban.ts` already reads the contract id. This README does not wire checkout.
 
-The contract previously deployed at `CD4IXEHZYS6YQ6LQ7H5NC4MPCCV6WDSAOM7AJFG5R3UYPDS4LX54DMWD` uses the old Spanish entry points (`iniciar`, `depositar`, `confirmar_servicio`, `liberar`, `reembolsar`, `obtener`). This source no longer matches that deployment. Build and deploy again, then replace `NEXT_PUBLIC_SOROBAN_ESCROW_CONTRACT_ID`.
+The current testnet deployment is `CDR7BACEMHTVTBPEWHEJXNAJMFPMHTMOVUSJGWVS7DR6GT7IV2L2WT7X`. It matches these English entry points. The previous contract `CD4IXEHZYS6YQ6LQ7H5NC4MPCCV6WDSAOM7AJFG5R3UYPDS4LX54DMWD` used Spanish entry points and does not match this source.
 
 ## Test locally
 
