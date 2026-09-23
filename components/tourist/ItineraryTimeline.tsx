@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTourist } from "@/components/tourist/TouristProvider";
 import { getOfertaById } from "@/lib/mock-data";
+import { dentroDeHorario, turnoLibre } from "@/lib/availability";
 import { alertasDisponibilidad, puedePagarAnticipo } from "@/lib/trip-progress";
 import { CategoriaMarkerIcon } from "@/components/tourist/CategoriaMarkerIcon";
-import type { AlertaDisponibilidad, ItineraryItem } from "@/types/tourist";
+import type { AlertaDisponibilidad, ItineraryItem, OfertaTuristica } from "@/types/tourist";
 
 const HOURS: string[] = Array.from({ length: 32 }, (_, i) => {
   const total = 6 * 60 + i * 30;
@@ -26,10 +27,18 @@ function formatSlot(hora: string): string {
   return `${String(hour12).padStart(2, "0")}:${String(m).padStart(2, "0")} ${suffix}`;
 }
 
+function horasParaElegir(oferta: OfertaTuristica, fecha: string, cantidad: number): string[] {
+  if (oferta.turnos.length > 0) {
+    return oferta.turnos
+      .filter((turno) => turno.fecha === fecha && turnoLibre(turno, cantidad))
+      .map((turno) => turno.hora);
+  }
+  return HOURS.filter((hora) => dentroDeHorario(oferta, fecha, hora));
+}
+
 export function ItineraryTimeline() {
   const { items, scheduleItem, updateItem, removeItem } = useTourist();
   const [fecha, setFecha] = useState("2026-09-24");
-  const [alerta, setAlerta] = useState<AlertaDisponibilidad | null>(null);
 
   const unscheduled = items.filter((row) => !row.fecha || !row.hora);
   const alertas = useMemo(() => alertasDisponibilidad(items), [items]);
@@ -48,17 +57,15 @@ export function ItineraryTimeline() {
   }, [dayItems]);
 
   const applySchedule = (itemId: string, nextFecha: string, hora: string) => {
-    const result = scheduleItem(itemId, nextFecha, hora);
-    setAlerta(result);
+    scheduleItem(itemId, nextFecha, hora);
   };
 
-  const acceptSuggestion = () => {
-    if (!alerta?.sugerenciaFecha || !alerta.sugerenciaHora) return;
-    const item = items.find((row) => row.ofertaId === alerta.ofertaId);
+  const acceptAlerta = (row: AlertaDisponibilidad) => {
+    if (!row.sugerenciaFecha || !row.sugerenciaHora) return;
+    const item = items.find((entry) => entry.ofertaId === row.ofertaId);
     if (!item) return;
-    const result = scheduleItem(item.id, alerta.sugerenciaFecha, alerta.sugerenciaHora);
-    setAlerta(result);
-    if (alerta.sugerenciaFecha) setFecha(alerta.sugerenciaFecha);
+    scheduleItem(item.id, row.sugerenciaFecha, row.sugerenciaHora);
+    setFecha(row.sugerenciaFecha);
   };
 
   return (
@@ -79,34 +86,9 @@ export function ItineraryTimeline() {
         </p>
       </div>
 
-      {alerta ? (
-        <div className="flex flex-col gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
-          <p className="inline-flex items-start gap-2 font-medium">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-            {alerta.mensaje}
-          </p>
-          {alerta.sugerenciaFecha && alerta.sugerenciaHora ? (
-            <p>
-              Siguiente turno disponible:{" "}
-              <strong>
-                {alerta.sugerenciaFecha} · {formatSlot(alerta.sugerenciaHora)}
-              </strong>
-            </p>
-          ) : (
-            <p>No hay otro turno libre en los próximos días de catálogo.</p>
-          )}
-          <div className="flex flex-wrap gap-2">
-            {alerta.sugerenciaFecha && alerta.sugerenciaHora ? (
-              <Button size="sm" onClick={acceptSuggestion}>
-                Usar siguiente turno
-              </Button>
-            ) : null}
-            <Button size="sm" variant="ghost" onClick={() => setAlerta(null)}>
-              Cerrar
-            </Button>
-          </div>
-        </div>
-      ) : items.every((row) => row.fecha && row.hora) && items.length > 0 ? (
+      {alertas.length > 0 ? (
+        <AlertasAgenda alertas={alertas} onAccept={acceptAlerta} />
+      ) : puedeContinuar ? (
         <p className="inline-flex items-center gap-2 text-sm text-emerald-800 dark:text-emerald-300">
           <CheckCircle2 className="h-4 w-4" />
           Todas las experiencias tienen hora asignada.
@@ -127,7 +109,7 @@ export function ItineraryTimeline() {
                 item={item}
                 fecha={fecha}
                 onSchedule={(hora) => applySchedule(item.id, fecha, hora)}
-                onNoches={(noches) => setAlerta(updateItem(item.id, { noches }))}
+                onNoches={(noches) => updateItem(item.id, { noches })}
               />
             ))}
           </ul>
@@ -162,22 +144,27 @@ export function ItineraryTimeline() {
                     slotItems.map((item) => {
                       const oferta = getOfertaById(item.ofertaId);
                       if (!oferta) return null;
+                      const conflicto = alertas.find((row) => row.ofertaId === item.ofertaId);
                       return (
                         <div
                           key={item.id}
                           draggable
                           onDragStart={(e) => e.dataTransfer.setData("text/item-id", item.id)}
-                          className="flex items-center justify-between gap-2 rounded-xl bg-emerald-700/10 px-3 py-2 text-sm"
+                          className={
+                            conflicto
+                              ? "flex items-center justify-between gap-2 rounded-xl border border-amber-400 bg-amber-50 px-3 py-2 text-sm dark:bg-amber-950/40"
+                              : "flex items-center justify-between gap-2 rounded-xl bg-emerald-700/10 px-3 py-2 text-sm"
+                          }
                         >
                           <span className="inline-flex items-center gap-2">
                             <CategoriaMarkerIcon categoria={oferta.categoria} className="h-4 w-4" />
                             <span>
                               <span className="font-medium">{oferta.titulo}</span>
                               <span className="block text-xs text-zinc-500">
-                                {oferta.empresa}
-                                {oferta.duracionMinutos
-                                  ? ` · ${oferta.duracionMinutos} min`
-                                  : ""}
+                                {conflicto?.mensaje ??
+                                  `${oferta.empresa}${
+                                    oferta.duracionMinutos ? ` · ${oferta.duracionMinutos} min` : ""
+                                  }`}
                               </span>
                             </span>
                           </span>
@@ -217,8 +204,15 @@ export function ItineraryTimeline() {
           </button>
         )}
         {!puedeContinuar && alertas.length > 0 ? (
+          <div className="space-y-3">
+            <p className="text-sm text-zinc-500">
+              Corrige las alertas de disponibilidad para continuar.
+            </p>
+            <AlertasAgenda alertas={alertas} onAccept={acceptAlerta} />
+          </div>
+        ) : !puedeContinuar && items.length > 0 ? (
           <p className="text-sm text-zinc-500">
-            Corrige las alertas de disponibilidad para continuar.
+            Falta fijar la fecha y la hora de cada experiencia.
           </p>
         ) : null}
       </div>
@@ -239,7 +233,7 @@ function TrayCard({
 }) {
   const oferta = getOfertaById(item.ofertaId);
   if (!oferta) return null;
-  const turnosDelDia = oferta.turnos.filter((t) => t.fecha === fecha);
+  const horas = horasParaElegir(oferta, fecha, item.cantidad);
 
   return (
     <li
@@ -273,11 +267,8 @@ function TrayCard({
             if (e.target.value) onSchedule(e.target.value);
           }}
         >
-          <option value="">Elegir turno…</option>
-          {(turnosDelDia.length > 0
-            ? turnosDelDia.map((t) => t.hora)
-            : HOURS.filter((h) => h.endsWith(":00") || h.endsWith(":30")).slice(0, 12)
-          ).map((hora) => (
+          <option value="">{horas.length > 0 ? "Elegir turno…" : "Sin turno libre este día"}</option>
+          {horas.map((hora) => (
             <option key={hora} value={hora}>
               {formatSlot(hora)}
             </option>
@@ -285,5 +276,44 @@ function TrayCard({
         </select>
       </label>
     </li>
+  );
+}
+
+function AlertasAgenda({
+  alertas,
+  onAccept,
+}: {
+  alertas: AlertaDisponibilidad[];
+  onAccept: (alerta: AlertaDisponibilidad) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      {alertas.map((row) => (
+        <div
+          key={row.ofertaId}
+          className="flex flex-col gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+        >
+          <p className="inline-flex items-start gap-2 font-medium">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            {row.mensaje}
+          </p>
+          {row.sugerenciaFecha && row.sugerenciaHora ? (
+            <>
+              <p>
+                Siguiente turno disponible:{" "}
+                <strong>
+                  {row.sugerenciaFecha} · {formatSlot(row.sugerenciaHora)}
+                </strong>
+              </p>
+              <Button size="sm" className="w-fit" onClick={() => onAccept(row)}>
+                Usar siguiente turno
+              </Button>
+            </>
+          ) : (
+            <p>No hay otro turno libre en los próximos días de catálogo.</p>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }

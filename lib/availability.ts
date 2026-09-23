@@ -99,17 +99,24 @@ export function verificarDisponibilidad(
     (turno) => turno.fecha === item.fecha && turno.hora === item.hora,
   );
 
-  if (exacto && turnoLibre(exacto, item.cantidad)) return null;
+  if (exacto && !turnoLibre(exacto, item.cantidad)) {
+    const next = siguienteTurno(oferta, item.fecha, item.hora, item.cantidad);
+    return {
+      ofertaId: oferta.id,
+      titulo: oferta.titulo,
+      mensaje: `${oferta.titulo} no tiene cupo en esa hora.`,
+      sugerenciaFecha: next?.fecha,
+      sugerenciaHora: next?.hora,
+    };
+  }
+
+  if (exacto || dentroDeHorario(oferta, item.fecha, item.hora)) return null;
 
   const next = siguienteTurno(oferta, item.fecha, item.hora, item.cantidad);
-  const motivo = exacto
-    ? "no tiene cupo en esa hora"
-    : "no opera exactamente a esa hora";
-
   return {
     ofertaId: oferta.id,
     titulo: oferta.titulo,
-    mensaje: `${oferta.titulo} ${motivo}.`,
+    mensaje: `${oferta.titulo} está fuera de su horario de atención.`,
     sugerenciaFecha: next?.fecha,
     sugerenciaHora: next?.hora,
   };
