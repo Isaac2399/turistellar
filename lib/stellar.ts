@@ -21,51 +21,68 @@ export interface StellarNetworkConfig {
   friendbotUrl: string | null;
 }
 
+function envOr(name: string, fallback: string): string {
+  const value = process.env[name]?.trim();
+  return value ? value : fallback;
+}
+
 const requireEnv = (name: string): string => {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(`Missing required env var: ${name}`);
   }
   return value;
 };
 
-function getConfig(network: string): StellarNetworkConfig {
+function resolveNetwork(value: string | undefined): StellarNetworkName {
+  const network = value?.trim().toLowerCase() ?? "";
+  if (network === "" || network === "testnet") return "testnet";
+  if (network === "mainnet") return "mainnet";
+  throw new Error(`Unknown Stellar network: ${value}`);
+}
+
+function getConfig(network: StellarNetworkName): StellarNetworkConfig {
   switch (network) {
     case "testnet":
       return {
         network: "testnet",
-        horizonUrl:
-          process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL ??
+        horizonUrl: envOr(
+          "NEXT_PUBLIC_STELLAR_HORIZON_URL",
           "https://horizon-testnet.stellar.org",
-        rpcUrl:
-          process.env.NEXT_PUBLIC_STELLAR_RPC_URL ??
+        ),
+        rpcUrl: envOr(
+          "NEXT_PUBLIC_STELLAR_RPC_URL",
           "https://soroban-testnet.stellar.org",
-        networkPassphrase:
-          process.env.NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE ??
+        ),
+        networkPassphrase: envOr(
+          "NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE",
           StellarSdk.Networks.TESTNET,
-        friendbotUrl:
-          process.env.NEXT_PUBLIC_STELLAR_FRIENDBOT_URL ??
+        ),
+        friendbotUrl: envOr(
+          "NEXT_PUBLIC_STELLAR_FRIENDBOT_URL",
           "https://friendbot.stellar.org",
+        ),
       };
     case "mainnet":
       return {
         network: "mainnet",
-        horizonUrl:
-          process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL ??
+        horizonUrl: envOr(
+          "NEXT_PUBLIC_STELLAR_HORIZON_URL",
           "https://horizon.stellar.org",
+        ),
         rpcUrl: requireEnv("NEXT_PUBLIC_STELLAR_MAINNET_RPC_URL"),
-        networkPassphrase:
-          process.env.NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE ??
+        networkPassphrase: envOr(
+          "NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE",
           StellarSdk.Networks.PUBLIC,
+        ),
         friendbotUrl: null,
       };
-    default:
-      throw new Error(`Unknown Stellar network: ${network}`);
   }
 }
 
-export const STELLAR_NETWORK = (process.env.NEXT_PUBLIC_STELLAR_NETWORK ??
-  "testnet") as StellarNetworkName;
+export const STELLAR_NETWORK = resolveNetwork(
+  process.env.NEXT_PUBLIC_STELLAR_NETWORK,
+);
 
 export const stellarConfig = getConfig(STELLAR_NETWORK);
 
