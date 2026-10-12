@@ -1,15 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f4ef;
+  --foreground: #1a2e1c;
+  --forest: #1f4d2e;
+  --forest-deep: #12351c;
+  --moss: #3d6b45;
+  --leaf: #5f8f4e;
+  --mist: #e8efe4;
+  --sand: #f0ebe2;
+  --ink-soft: #3d4a3f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-moss: var(--moss);
+  --color-leaf: var(--leaf);
+  --color-mist: var(--mist);
+  --color-sand: var(--sand);
+  --color-ink-soft: var(--ink-soft);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +37,99 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
+}
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-kenburns {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes home-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-draw-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.home-rise {
+  animation: home-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-rise-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.home-rise-delay-2 {
+  animation-delay: 0.24s;
+}
+
+.home-rise-delay-3 {
+  animation-delay: 0.36s;
+}
+
+.home-kenburns {
+  animation: home-kenburns 18s ease-out both;
+}
+
+.home-step {
+  animation: home-step-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-step:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.home-step:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.home-step:nth-child(3) {
+  animation-delay: 0.25s;
+}
+
+.home-step:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+.home-step-line {
+  transform-origin: left center;
+  animation: home-draw-line 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-rise,
+  .home-kenburns,
+  .home-step,
+  .home-step-line {
+    animation: none;
+  }
 }
