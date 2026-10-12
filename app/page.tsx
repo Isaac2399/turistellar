@@ -74,7 +74,7 @@ export default function Home() {
     <div className={`${display.variable} ${body.className}`}>
       <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden">
         <Image
-          src="/hero-rural.jpg"
+          src="/hero-valley.jpg"
           alt="Valle verde con bosque y montañas nevadas bajo cielo azul"
           fill
           priority
