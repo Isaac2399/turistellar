@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Literata, Manrope } from "next/font/google";
 import {
   CalendarClock,
   MapPinned,
@@ -10,20 +9,10 @@ import {
   WalletCards,
 } from "lucide-react";
 
-const display = Literata({
-  subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const body = Manrope({
-  subsets: ["latin"],
-  variable: "--font-home-body",
-});
-
 export const metadata: Metadata = {
   title: "Hub Rural",
   description:
-    "Reserva alojamiento, tours y productos de comerciantes locales en un solo viaje. El anticipo queda retenido hasta que el comerciante confirma el servicio.",
+    "Reserva alojamiento, tours y productos de comerciantes locales en un solo viaje. Anticipo protegido hasta que el anfitrión confirma el servicio.",
 };
 
 const PASOS = [
@@ -43,13 +32,13 @@ const PASOS = [
   {
     n: 3,
     titulo: "Pagar el anticipo",
-    texto: "Reservas con el anticipo. El saldo restante se paga en el destino.",
+    texto: "Reservas con el anticipo protegido. El saldo restante se paga en destino.",
     icon: WalletCards,
   },
   {
     n: 4,
     titulo: "Recibir el pasaporte",
-    texto: "Tras pagar el anticipo recibes el pasaporte con todas tus reservas.",
+    texto: "Tras pagar recibes el pasaporte de experiencias con todas tus reservas.",
     icon: Ticket,
   },
 ] as const;
@@ -71,7 +60,7 @@ const OFERTAS = [
 
 export default function Home() {
   return (
-    <div className={`${display.variable} ${body.className}`}>
+    <div>
       <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden">
         <Image
           src="/hero-valley.jpg"
@@ -87,33 +76,31 @@ export default function Home() {
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_85%,rgba(95,143,78,0.22),transparent_50%)]"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_85%,rgba(5,150,105,0.22),transparent_50%)]"
         />
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-6xl flex-col justify-end px-4 pb-14 pt-20 sm:pb-20">
           <div className="max-w-2xl text-white">
-            <p
-              className={`${display.className} home-rise text-5xl leading-[0.95] tracking-tight sm:text-6xl md:text-7xl`}
-            >
+            <p className="home-rise font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
               Hub Rural
             </p>
             <h1 className="home-rise home-rise-delay-1 mt-5 max-w-xl text-2xl font-medium leading-snug text-white/95 sm:text-3xl">
               Un solo viaje: hospedaje, tours y productos del campo.
             </h1>
             <p className="home-rise home-rise-delay-2 mt-4 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg">
-              Arma tu plan con comerciantes locales y reserva con anticipo
-              respaldado hasta que el servicio se confirme.
+              Arma tu plan con anfitriones locales y reserva con anticipo
+              protegido hasta que el servicio se confirme.
             </p>
             <div className="home-rise home-rise-delay-3 mt-8 flex flex-wrap gap-3">
               <Link
                 href="/explorar"
-                className="inline-flex items-center justify-center rounded-md bg-[#e8efe4] px-5 py-3 text-sm font-semibold text-[#12351c] transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-2xl bg-amber-50 px-5 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white"
               >
                 Explorar destinos
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center rounded-md border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 Iniciar sesión
               </Link>
@@ -123,22 +110,22 @@ export default function Home() {
       </section>
 
       <section
-        className="relative overflow-hidden bg-[linear-gradient(180deg,#eef5ea_0%,#e4efe0_50%,#f6f4ef_100%)] px-4 py-20"
+        className="relative overflow-hidden px-4 py-20"
         aria-labelledby="como-funciona"
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_at_top,rgba(61,107,69,0.12),transparent_70%)]"
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_at_top,rgba(4,120,87,0.12),transparent_70%)]"
         />
         <div className="relative mx-auto w-full max-w-6xl">
           <div className="max-w-2xl">
             <h2
               id="como-funciona"
-              className={`${display.className} text-3xl tracking-tight text-[#12351c] sm:text-4xl`}
+              className="font-display text-3xl tracking-tight text-stone-900 sm:text-4xl dark:text-stone-50"
             >
               Cómo funciona
             </h2>
-            <p className="mt-3 text-base text-[#3d4a3f] sm:text-lg">
+            <p className="mt-3 text-base text-stone-600 sm:text-lg dark:text-stone-400">
               Cuatro pasos, en el mismo orden que verás al planificar tu viaje.
             </p>
           </div>
@@ -146,7 +133,7 @@ export default function Home() {
           <div className="relative mt-12">
             <div
               aria-hidden
-              className="home-step-line pointer-events-none absolute top-[1.65rem] right-[8%] left-[8%] hidden h-[2px] bg-[linear-gradient(90deg,transparent,#3d6b45_12%,#3d6b45_88%,transparent)] lg:block"
+              className="home-step-line pointer-events-none absolute top-[1.65rem] right-[8%] left-[8%] hidden h-[2px] bg-[linear-gradient(90deg,transparent,#047857_12%,#047857_88%,transparent)] lg:block"
             />
             <ol className="grid gap-10 lg:grid-cols-4 lg:gap-8">
               {PASOS.map((paso) => {
@@ -154,19 +141,17 @@ export default function Home() {
                 return (
                   <li key={paso.titulo} className="home-step relative">
                     <div className="flex items-start gap-4 lg:flex-col lg:gap-4">
-                      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1f4d2e] text-[#e8efe4] ring-4 ring-[#eef5ea]">
+                      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-amber-50 ring-4 ring-[var(--background)]">
                         <Icon className="h-6 w-6" aria-hidden />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#3d6b45]">
+                        <p className="text-xs font-bold tracking-[0.16em] text-emerald-800 uppercase dark:text-emerald-300">
                           Paso {paso.n}
                         </p>
-                        <h3
-                          className={`${display.className} mt-1 text-xl tracking-tight text-[#12351c] sm:text-2xl`}
-                        >
+                        <h3 className="font-display mt-1 text-xl tracking-tight text-stone-900 sm:text-2xl dark:text-stone-50">
                           {paso.titulo}
                         </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-[#3d4a3f] sm:text-base">
+                        <p className="mt-2 text-sm leading-relaxed text-stone-600 sm:text-base dark:text-stone-400">
                           {paso.texto}
                         </p>
                       </div>
@@ -186,24 +171,25 @@ export default function Home() {
         <div className="max-w-2xl">
           <h2
             id="que-ofrecemos"
-            className={`${display.className} text-3xl tracking-tight text-[#12351c]`}
+            className="font-display text-3xl tracking-tight text-stone-900 dark:text-stone-50"
           >
             Qué ofrecemos
           </h2>
-          <p className="mt-3 text-[#3d4a3f]">
+          <p className="mt-3 text-stone-600 dark:text-stone-400">
             Alojamiento, tours y productos locales se ven juntos en el mapa,
             para armar el viaje sin saltar de un listado a otro.
           </p>
         </div>
         <ul className="mt-10 grid gap-8 md:grid-cols-3">
           {OFERTAS.map((oferta) => (
-            <li key={oferta.titulo} className="border-t border-[#1f4d2e]/20 pt-5">
-              <h3
-                className={`${display.className} text-xl tracking-tight text-[#12351c]`}
-              >
+            <li
+              key={oferta.titulo}
+              className="rounded-3xl border border-stone-900/8 bg-white/60 p-5 shadow-[var(--shadow-soft)] dark:border-white/10 dark:bg-stone-900/40"
+            >
+              <h3 className="font-display text-xl tracking-tight text-stone-900 dark:text-stone-50">
                 {oferta.titulo}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#3d4a3f] sm:text-base">
+              <p className="mt-2 text-sm leading-relaxed text-stone-600 sm:text-base dark:text-stone-400">
                 {oferta.texto}
               </p>
             </li>
@@ -212,24 +198,24 @@ export default function Home() {
       </section>
 
       <section
-        className="border-y border-[#1f4d2e]/10 bg-[#e8efe4]/70 px-4 py-16"
+        className="border-y border-stone-900/8 bg-emerald-50/60 px-4 py-16 dark:bg-emerald-950/20"
         aria-labelledby="respaldo-pago"
       >
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#1f4d2e] text-[#e8efe4]">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-600 text-white">
             <ShieldCheck className="h-6 w-6" aria-hidden />
           </div>
           <div className="max-w-2xl">
             <h2
               id="respaldo-pago"
-              className={`${display.className} text-3xl tracking-tight text-[#12351c]`}
+              className="font-display text-3xl tracking-tight text-stone-900 dark:text-stone-50"
             >
-              Respaldo del pago
+              Anticipo protegido
             </h2>
-            <p className="mt-3 text-[#3d4a3f]">
-              El anticipo queda retenido hasta que el comerciante confirma que
+            <p className="mt-3 text-stone-600 dark:text-stone-400">
+              El anticipo queda protegido hasta que el anfitrión confirma que
               prestó el servicio. Si el servicio no se presta, recuperas el
-              anticipo.
+              anticipo. Cada pago genera un recibo verificable.
             </p>
           </div>
         </div>
@@ -241,24 +227,24 @@ export default function Home() {
       >
         <h2
           id="siguiente-paso"
-          className={`${display.className} text-3xl tracking-tight text-[#12351c]`}
+          className="font-display text-3xl tracking-tight text-stone-900 dark:text-stone-50"
         >
           Empieza por el viaje
         </h2>
-        <p className="mt-3 max-w-xl text-[#3d4a3f]">
+        <p className="mt-3 max-w-xl text-stone-600 dark:text-stone-400">
           Entra a Explorar, elige lo que quieres vivir y avanza paso a paso hasta
-          tu pasaporte.
+          tu pasaporte de experiencias.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/explorar"
-            className="inline-flex items-center justify-center rounded-md bg-[#1f4d2e] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#12351c]"
+            className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(4,120,87,0.22)] transition hover:bg-green-800"
           >
             Explorar
           </Link>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center rounded-md border border-[#1f4d2e]/25 px-5 py-3 text-sm font-semibold text-[#12351c] transition hover:bg-[#e8efe4]"
+            className="inline-flex items-center justify-center rounded-2xl border border-stone-900/12 bg-white/70 px-5 py-3 text-sm font-semibold text-stone-900 transition hover:bg-emerald-50 dark:border-white/15 dark:bg-white/5 dark:text-stone-50"
           >
             Iniciar sesión
           </Link>

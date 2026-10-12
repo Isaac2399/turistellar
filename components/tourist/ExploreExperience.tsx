@@ -51,7 +51,7 @@ export function ExploreExperience() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_21rem]">
       <div className="space-y-8">
         <ExploreFilters
           query={query}
@@ -59,13 +59,26 @@ export function ExploreExperience() {
           categoria={categoria}
           onCategoriaChange={setCategoria}
         />
-        <InteractiveMap
-          items={items}
-          emphasizedIds={emphasizedIds}
-          selectedId={selectedId}
-          onSelectOferta={setSelectedId}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="overflow-hidden rounded-3xl border border-stone-900/8 shadow-[var(--shadow-soft)] dark:border-white/10">
+          <InteractiveMap
+            items={items}
+            emphasizedIds={emphasizedIds}
+            selectedId={selectedId}
+            onSelectOferta={setSelectedId}
+          />
+        </div>
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold tracking-[0.14em] text-emerald-800 uppercase dark:text-emerald-300">
+              Catálogo vivo
+            </p>
+            <h2 className="font-display text-2xl font-semibold text-stone-900 dark:text-stone-50">
+              Experiencias cerca de ti
+            </h2>
+          </div>
+          <p className="text-sm font-medium text-stone-500">{filtered.length} resultados</p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2">
           {filtered.map((oferta) => (
             <OfferCard
               key={oferta.id}
@@ -76,7 +89,9 @@ export function ExploreExperience() {
           ))}
         </div>
         {filtered.length === 0 ? (
-          <p className="text-sm text-zinc-500">No hay ofertas para esos filtros.</p>
+          <p className="rounded-2xl border border-dashed border-stone-900/15 px-4 py-8 text-center text-sm text-stone-500">
+            No hay ofertas para esos filtros. Prueba otra categoría o búsqueda.
+          </p>
         ) : null}
       </div>
       <ItineraryPanel selectedId={selectedId} onFocus={focusOnMap} />

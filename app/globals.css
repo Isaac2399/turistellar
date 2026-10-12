@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f4ef;
-  --foreground: #1a2e1c;
-  --forest: #1f4d2e;
-  --forest-deep: #12351c;
-  --moss: #3d6b45;
-  --leaf: #5f8f4e;
-  --mist: #e8efe4;
-  --sand: #f0ebe2;
-  --ink-soft: #3d4a3f;
+  /* Nature / ecotourism palette */
+  --background: #f7f3ea;
+  --foreground: #1c1917;
+  --forest: #047857;
+  --forest-deep: #166534;
+  --moss: #15803d;
+  --leaf: #059669;
+  --teal: #0d9488;
+  --teal-soft: #ccfbf1;
+  --sand: #faf6ef;
+  --sand-deep: #f5efe3;
+  --mist: #ecfdf5;
+  --ink-soft: #44403c;
+  --glass: rgba(255, 252, 247, 0.72);
+  --glass-border: rgba(28, 25, 23, 0.08);
+  --shadow-soft: 0 10px 30px rgba(28, 25, 23, 0.06);
+  --shadow-lift: 0 18px 40px rgba(6, 78, 59, 0.12);
 }
 
 @theme inline {
@@ -19,25 +27,66 @@
   --color-forest-deep: var(--forest-deep);
   --color-moss: var(--moss);
   --color-leaf: var(--leaf);
-  --color-mist: var(--mist);
+  --color-teal: var(--teal);
+  --color-teal-soft: var(--teal-soft);
   --color-sand: var(--sand);
+  --color-sand-deep: var(--sand-deep);
+  --color-mist: var(--mist);
   --color-ink-soft: var(--ink-soft);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-manrope);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-display);
+  --font-display: var(--font-literata);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #121816;
+    --foreground: #f5f5f4;
+    --sand: #1a211d;
+    --sand-deep: #151b18;
+    --mist: #132019;
+    --glass: rgba(18, 24, 22, 0.78);
+    --glass-border: rgba(245, 245, 244, 0.1);
+    --ink-soft: #d6d3d1;
   }
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(16, 185, 129, 0.12), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 0%, rgba(13, 148, 136, 0.1), transparent 50%),
+    var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
+  font-family: var(--font-manrope), ui-sans-serif, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-literata), ui-serif, Georgia, serif;
+}
+
+.glass-panel {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.surface-card {
+  background: color-mix(in oklab, var(--sand) 88%, white);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.lift-hover {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lift-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
 }
 
 @keyframes home-rise {
@@ -77,6 +126,17 @@ body {
   }
   to {
     transform: scaleX(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -125,11 +185,22 @@ body {
   animation: home-draw-line 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
 }
 
+.fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-rise,
   .home-kenburns,
   .home-step,
-  .home-step-line {
+  .home-step-line,
+  .fade-up,
+  .lift-hover {
     animation: none;
+    transition: none;
+  }
+
+  .lift-hover:hover {
+    transform: none;
   }
 }

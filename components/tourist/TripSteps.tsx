@@ -49,7 +49,7 @@ export function TripSteps() {
 
   let estado = "";
   if (hydrated && items.length === 0) {
-    estado = "El itinerario está vacío. Agrega una oferta para armar el viaje.";
+    estado = "El itinerario está vacío. Agrega una experiencia para armar el viaje.";
   } else if (hydrated && !horariosListos) {
     estado = "Falta fijar la fecha y la hora de cada parada.";
   } else if (hydrated && alertas.length > 0) {
@@ -66,20 +66,25 @@ export function TripSteps() {
           const esHecho = hydrated && hecho[paso.n];
           const esAbierto = esActual || (hydrated && abierto[paso.n]);
           const className = cn(
-            "flex min-h-11 items-center gap-2 rounded-full px-3 py-2 text-sm font-medium",
-            esActual && "bg-emerald-700 text-white",
-            !esActual && esHecho && "border border-emerald-700 text-emerald-800 dark:text-emerald-300",
+            "flex min-h-12 items-center gap-2.5 rounded-2xl px-3.5 py-2.5 text-sm font-semibold transition-all",
+            esActual &&
+              "bg-emerald-700 text-white shadow-[0_8px_18px_rgba(4,120,87,0.22)]",
+            !esActual &&
+              esHecho &&
+              "border border-emerald-700/40 bg-emerald-50/80 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200",
             !esActual &&
               !esHecho &&
               esAbierto &&
-              "border border-emerald-800/15 text-zinc-700 hover:bg-emerald-50 dark:border-white/10 dark:text-zinc-200 dark:hover:bg-emerald-950",
-            !esActual && !esAbierto && "border border-emerald-900/10 text-zinc-400 dark:border-white/10",
+              "border border-stone-900/10 bg-white/70 text-stone-700 backdrop-blur-sm hover:bg-emerald-50/80 dark:border-white/10 dark:bg-stone-900/50 dark:text-stone-200",
+            !esActual &&
+              !esAbierto &&
+              "border border-stone-900/8 bg-stone-50/60 text-stone-400 dark:border-white/5 dark:bg-stone-900/30",
           );
           const contenido = (
             <>
               <span
                 className={cn(
-                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs",
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                   esActual ? "bg-white/20" : "bg-emerald-700/10",
                 )}
               >
@@ -108,7 +113,10 @@ export function TripSteps() {
         })}
       </ol>
       {estado ? (
-        <p role="status" className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p
+          role="status"
+          className="rounded-2xl border border-teal-700/15 bg-teal-50/70 px-3.5 py-2 text-sm text-teal-950 dark:border-teal-400/20 dark:bg-teal-950/30 dark:text-teal-100"
+        >
           {estado}
         </p>
       ) : null}
