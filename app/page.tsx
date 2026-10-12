@@ -75,19 +75,19 @@ export default function Home() {
       <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden">
         <Image
           src="/hero-rural.jpg"
-          alt="Camino rural entre campos verdes hacia una casa de campo"
+          alt="Valle verde con bosque y montañas nevadas bajo cielo azul"
           fill
           priority
           sizes="100vw"
-          className="home-kenburns object-cover object-center"
+          className="home-kenburns object-cover object-[center_40%]"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,53,28,0.35)_0%,rgba(18,53,28,0.25)_35%,rgba(18,53,28,0.78)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,36,20,0.18)_0%,rgba(10,36,20,0.12)_40%,rgba(10,36,20,0.72)_100%)]"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(95,143,78,0.28),transparent_55%)]"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_85%,rgba(95,143,78,0.22),transparent_50%)]"
         />
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-6xl flex-col justify-end px-4 pb-14 pt-20 sm:pb-20">
@@ -146,27 +146,23 @@ export default function Home() {
           <div className="relative mt-12">
             <div
               aria-hidden
-              className="home-step-line pointer-events-none absolute top-[1.65rem] right-[12.5%] left-[12.5%] hidden h-px bg-[#3d6b45]/35 lg:block"
+              className="home-step-line pointer-events-none absolute top-[1.65rem] right-[8%] left-[8%] hidden h-[2px] bg-[linear-gradient(90deg,transparent,#3d6b45_12%,#3d6b45_88%,transparent)] lg:block"
             />
-            <ol className="grid gap-10 lg:grid-cols-4 lg:gap-6">
+            <ol className="grid gap-10 lg:grid-cols-4 lg:gap-8">
               {PASOS.map((paso) => {
                 const Icon = paso.icon;
                 return (
                   <li key={paso.titulo} className="home-step relative">
-                    <div className="flex items-start gap-4 lg:flex-col lg:gap-5">
-                      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1f4d2e] text-[#e8efe4]">
-                        <span className="sr-only">Paso {paso.n}</span>
+                    <div className="flex items-start gap-4 lg:flex-col lg:gap-4">
+                      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1f4d2e] text-[#e8efe4] ring-4 ring-[#eef5ea]">
                         <Icon className="h-6 w-6" aria-hidden />
-                        <span className="absolute -top-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-[#5f8f4e] px-1 text-xs font-bold text-white">
-                          {paso.n}
-                        </span>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#3d6b45] lg:hidden">
+                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#3d6b45]">
                           Paso {paso.n}
                         </p>
                         <h3
-                          className={`${display.className} text-xl tracking-tight text-[#12351c]`}
+                          className={`${display.className} mt-1 text-xl tracking-tight text-[#12351c] sm:text-2xl`}
                         >
                           {paso.titulo}
                         </h3>
