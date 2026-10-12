@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Literata, Manrope } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+});
+
+const literata = Literata({
+  variable: "--font-literata",
   subsets: ["latin"],
 });
 
@@ -15,18 +20,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hub de Turismo Rural y Comercio Local",
+  title: "Hub Rural · Ecoturismo y experiencias locales",
   description:
-    "Reserva experiencias rurales y preordena productos locales. Pagos con USDC/XLM en Stellar.",
+    "Reserva tours, alojamiento y productos locales en un solo viaje. Anticipo protegido y pasaporte de experiencias.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${literata.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <AppProviders>
           <Navbar />
           <main className="flex flex-1 flex-col">{children}</main>

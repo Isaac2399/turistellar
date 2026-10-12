@@ -72,17 +72,17 @@ function LoginForm() {
 
   return (
     <section className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-16">
-      <Card>
-        <div className="mb-4 grid grid-cols-2 gap-1 rounded-full bg-zinc-100 p-1 text-sm dark:bg-zinc-900">
+      <Card className="glass-panel border-stone-900/8">
+        <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl bg-stone-100/80 p-1 text-sm dark:bg-stone-900">
           <button
             type="button"
             aria-pressed={!registering}
             onClick={() => switchMode("login")}
             className={cn(
-              "rounded-full px-3 py-2 font-medium",
+              "rounded-xl px-3 py-2 font-semibold transition",
               !registering
-                ? "bg-white text-emerald-900 shadow-sm dark:bg-zinc-950 dark:text-emerald-200"
-                : "text-zinc-600 dark:text-zinc-400",
+                ? "bg-white text-emerald-900 shadow-sm dark:bg-stone-950 dark:text-emerald-200"
+                : "text-stone-600 dark:text-stone-400",
             )}
           >
             Iniciar sesión
@@ -92,10 +92,10 @@ function LoginForm() {
             aria-pressed={registering}
             onClick={() => switchMode("register")}
             className={cn(
-              "rounded-full px-3 py-2 font-medium",
+              "rounded-xl px-3 py-2 font-semibold transition",
               registering
-                ? "bg-white text-emerald-900 shadow-sm dark:bg-zinc-950 dark:text-emerald-200"
-                : "text-zinc-600 dark:text-zinc-400",
+                ? "bg-white text-emerald-900 shadow-sm dark:bg-stone-950 dark:text-emerald-200"
+                : "text-stone-600 dark:text-stone-400",
             )}
           >
             Crear cuenta
@@ -105,8 +105,8 @@ function LoginForm() {
           <CardTitle>{registering ? "Crear cuenta" : "Iniciar sesión"}</CardTitle>
           <CardDescription>
             {registering
-              ? "Elige si entras como turista o como comerciante. Al crear la cuenta quedas dentro del sitio."
-              : "El panel de comercio solo está disponible para cuentas con rol de comerciante. El resto de la web se puede ver sin iniciar sesión."}
+              ? "Elige si entras como viajero o como anfitrión. Al crear la cuenta quedas dentro del sitio."
+              : "El panel de anfitrión solo está disponible para cuentas de comerciante. El resto de la web se puede ver sin iniciar sesión."}
           </CardDescription>
         </CardHeader>
         <form className="space-y-4" method="post" onSubmit={onSubmit}>
@@ -148,26 +148,26 @@ function LoginForm() {
               onChange={(event) => setPassword(event.target.value)}
             />
             {registering ? (
-              <p className="text-xs text-zinc-500">Mínimo 8 caracteres.</p>
+              <p className="text-xs text-stone-500">Mínimo 8 caracteres.</p>
             ) : null}
           </div>
           {registering ? (
             <fieldset className="space-y-2">
-              <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-200">Rol</legend>
+              <legend className="text-sm font-semibold text-stone-700 dark:text-stone-200">Rol</legend>
               <div className="grid grid-cols-2 gap-2">
                 {(
                   [
-                    ["turista", "Turista"],
-                    ["comerciante", "Comerciante"],
+                    ["turista", "Viajero"],
+                    ["comerciante", "Anfitrión"],
                   ] as const
                 ).map(([value, label]) => (
                   <label
                     key={value}
                     className={cn(
-                      "flex cursor-pointer items-center justify-center rounded-xl border px-3 py-2 text-sm",
+                      "flex cursor-pointer items-center justify-center rounded-2xl border px-3 py-2.5 text-sm font-semibold",
                       rol === value
                         ? "border-emerald-700 bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-                        : "border-emerald-900/15 text-zinc-700 dark:border-white/10 dark:text-zinc-200",
+                        : "border-stone-900/10 text-stone-700 dark:border-white/10 dark:text-stone-200",
                     )}
                   >
                     <input
@@ -199,7 +199,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <section className="mx-auto w-full max-w-md px-4 py-16 text-sm text-zinc-500">
+        <section className="mx-auto w-full max-w-md px-4 py-16 text-sm text-stone-500">
           Cargando…
         </section>
       }

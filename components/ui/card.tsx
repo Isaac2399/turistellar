@@ -5,7 +5,19 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-emerald-900/10 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-zinc-950",
+        "rounded-3xl border border-stone-900/8 bg-[color-mix(in_oklab,var(--sand)_90%,white)] p-5 shadow-[var(--shadow-soft)] dark:border-white/10 dark:bg-stone-900/60",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function GlassCard({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "glass-panel rounded-3xl p-5",
         className,
       )}
       {...props}
@@ -18,7 +30,12 @@ export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElemen
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={cn("text-lg font-semibold tracking-tight", className)} {...props} />;
+  return (
+    <h2
+      className={cn("font-display text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-50", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardDescription({
@@ -26,6 +43,6 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-zinc-600 dark:text-zinc-400", className)} {...props} />
+    <p className={cn("text-sm text-stone-600 dark:text-stone-400", className)} {...props} />
   );
 }

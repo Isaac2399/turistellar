@@ -14,10 +14,10 @@ export type EstadoReserva =
 export const ESTADO_RESERVA_LABEL: Record<EstadoReserva, string> = {
   borrador: "Borrador",
   horarios_fijados: "Horarios fijados",
-  anticipo_retenido: "Anticipo retenido",
+  anticipo_retenido: "Anticipo protegido",
   servicio_confirmado: "Servicio confirmado",
-  fondos_liberados: "Fondos liberados",
-  reembolsado: "Reembolsado",
+  fondos_liberados: "Anticipo liberado",
+  reembolsado: "Devuelto",
 };
 
 export const ESTADO_RESERVA_TONE: Record<

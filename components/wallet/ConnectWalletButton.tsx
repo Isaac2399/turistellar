@@ -18,8 +18,8 @@ export function ConnectWalletButton() {
   if (isConnected && publicKey) {
     return (
       <Button variant="outline" onClick={disconnect} title={publicKey}>
-        <Wallet className="mr-2 h-4 w-4" />
-        {truncatePublicKey(publicKey)}
+        <Wallet className="h-4 w-4" />
+        Monedero · {truncatePublicKey(publicKey)}
       </Button>
     );
   }
@@ -35,8 +35,8 @@ export function ConnectWalletButton() {
       }}
       disabled={isLoading}
     >
-      <Wallet className="mr-2 h-4 w-4" />
-      {isFreighterInstalled ? "Conectar Freighter" : "Instalar Freighter"}
+      <Wallet className="h-4 w-4" />
+      {isFreighterInstalled ? "Conectar monedero digital" : "Activar monedero digital"}
     </Button>
   );
 }

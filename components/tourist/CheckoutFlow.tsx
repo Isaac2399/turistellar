@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CreditCard, Loader2, Wallet } from "lucide-react";
+import { CreditCard, Loader2, ShieldCheck, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,14 +60,14 @@ export function CheckoutFlow() {
         let key = wallet.publicKey;
         if (!wallet.isFreighterInstalled) {
           window.open("https://www.freighter.app", "_blank", "noopener,noreferrer");
-          setError("Instala Freighter para firmar el anticipo en Stellar.");
+          setError("Activa tu monedero digital para firmar el anticipo protegido.");
           return;
         }
         if (!key) {
           key = await wallet.connect();
         }
         if (!key) {
-          setError(wallet.error ?? "No se pudo conectar Freighter.");
+          setError(wallet.error ?? "No se pudo conectar el monedero digital.");
           return;
         }
         await new Promise((r) => setTimeout(r, 700));
@@ -83,7 +83,7 @@ export function CheckoutFlow() {
       }
 
       if (cardName.trim().length < 3 || cardLast4.replace(/\D/g, "").length < 4) {
-        setError("Completa el nombre y los 4 últimos dígitos para la simulación fiat.");
+        setError("Completa el nombre y los 4 últimos dígitos para la simulación de tarjeta.");
         return;
       }
       await new Promise((r) => setTimeout(r, 900));
@@ -99,14 +99,16 @@ export function CheckoutFlow() {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-emerald-900/10 p-8 text-center dark:border-white/10">
-        <p className="text-lg font-medium">No hay un paquete de viaje aún.</p>
-        <p className="mt-2 text-sm text-zinc-500">
-          Arma tu itinerario en Explorar y vuelve para pagar el anticipo.
+      <div className="rounded-3xl border border-stone-900/8 bg-[color-mix(in_oklab,var(--sand)_90%,white)] p-10 text-center shadow-[var(--shadow-soft)] dark:border-white/10">
+        <p className="font-display text-xl font-semibold text-stone-900 dark:text-stone-50">
+          Aún no hay un viaje armado
+        </p>
+        <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
+          Explora experiencias y vuelve para pagar el anticipo protegido.
         </p>
         <Link
           href="/explorar"
-          className="mt-6 inline-flex rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white"
+          className="mt-6 inline-flex rounded-2xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-800"
         >
           Ir a explorar
         </Link>
@@ -118,7 +120,9 @@ export function CheckoutFlow() {
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <section className="space-y-6">
         <div>
-          <h2 className="text-lg font-semibold">Resumen del paquete</h2>
+          <h2 className="font-display text-xl font-semibold text-stone-900 dark:text-stone-50">
+            Resumen del viaje
+          </h2>
           <ul className="mt-4 space-y-3">
             {desglose.lineas.map((linea) => {
               const oferta = getOfertaById(linea.ofertaId);
@@ -126,18 +130,20 @@ export function CheckoutFlow() {
               return (
                 <li
                   key={linea.itemId}
-                  className="rounded-2xl border border-emerald-900/10 p-4 dark:border-white/10"
+                  className="rounded-3xl border border-stone-900/8 bg-white/70 p-4 shadow-[var(--shadow-soft)] dark:border-white/10 dark:bg-stone-900/50"
                 >
-                  <p className="text-xs uppercase tracking-wide text-zinc-500">
+                  <p className="text-xs font-bold tracking-[0.12em] text-stone-500 uppercase">
                     {CATEGORIA_OFERTA_LABEL[linea.categoria]}
                   </p>
-                  <p className="font-medium">{linea.titulo}</p>
-                  <p className="text-sm text-zinc-500">
+                  <p className="mt-1 font-semibold text-stone-900 dark:text-stone-50">
+                    {linea.titulo}
+                  </p>
+                  <p className="text-sm text-stone-500">
                     {oferta?.empresa}
                     {item?.fecha ? ` · ${item.fecha}` : ""}
                     {item?.hora ? ` ${item.hora}` : ""}
                   </p>
-                  <p className="mt-2 text-sm">
+                  <p className="mt-2 text-sm text-stone-700 dark:text-stone-300">
                     {linea.categoria === "alojamiento"
                       ? `${linea.noches} noche(s)`
                       : linea.categoria === "tour"
@@ -152,27 +158,31 @@ export function CheckoutFlow() {
         </div>
 
         {alerts.length > 0 ? (
-          <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm dark:border-amber-700 dark:bg-amber-950/40">
-            <p className="font-medium">Conflictos de cupo</p>
+          <div className="rounded-3xl border border-amber-300 bg-amber-50 p-4 text-sm dark:border-amber-700 dark:bg-amber-950/40">
+            <p className="font-semibold">Conflictos de cupo</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               {alerts.map((a) => (
                 <li key={`${a.ofertaId}-${a.mensaje}`}>{a.mensaje}</li>
               ))}
             </ul>
-            <Link href="/explorar/agenda" className="mt-3 inline-block text-emerald-800 underline">
+            <Link href="/explorar/agenda" className="mt-3 inline-block font-semibold text-emerald-800 underline">
               Ajustar agenda
             </Link>
           </div>
         ) : null}
       </section>
 
-      <aside className="space-y-5 rounded-2xl border border-emerald-900/10 bg-white p-5 dark:border-white/10 dark:bg-zinc-950">
+      <aside className="glass-panel space-y-5 rounded-3xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg font-semibold">Desglose financiero</h2>
+          <h2 className="font-display text-xl font-semibold text-stone-900 dark:text-stone-50">
+            Pago del anticipo
+          </h2>
           <Badge tone={ESTADO_RESERVA_TONE[estadoViaje]}>{ESTADO_RESERVA_LABEL[estadoViaje]}</Badge>
         </div>
-        <p className="text-xs text-zinc-500">
-          Al pagar, la reserva nace en {ESTADO_RESERVA_LABEL.anticipo_retenido}.
+        <p className="inline-flex items-start gap-2 rounded-2xl bg-teal-50/80 px-3 py-2 text-xs text-teal-950 dark:bg-teal-950/40 dark:text-teal-100">
+          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+          El anticipo queda protegido hasta que el anfitrión confirme el servicio. Recibirás
+          un recibo verificable y tu pasaporte de experiencias.
         </p>
         <dl className="space-y-2 text-sm">
           <div className="flex justify-between">
@@ -183,42 +193,38 @@ export function CheckoutFlow() {
             <dt>Anticipo a pagar hoy</dt>
             <dd className="font-semibold">{formatUsd(desglose.anticipo)}</dd>
           </div>
-          <div className="flex justify-between text-zinc-500">
+          <div className="flex justify-between text-stone-500">
             <dt>Saldo al llegar</dt>
             <dd>{formatUsd(desglose.saldo)}</dd>
           </div>
         </dl>
-        <p className="text-xs text-zinc-500">
-          El anticipo queda retenido. El escaneo confirma el servicio y, después, se pueden
-          liberar los fondos. El reembolso simulado solo aplica mientras sigue retenido.
-        </p>
 
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setCanal("fiat")}
-            className={`rounded-2xl border px-3 py-3 text-left text-sm ${
+            className={`rounded-2xl border px-3 py-3 text-left text-sm transition ${
               canal === "fiat"
                 ? "border-emerald-700 bg-emerald-50 dark:bg-emerald-950"
-                : "border-emerald-900/10 dark:border-white/10"
+                : "border-stone-900/10 bg-white/50 hover:border-emerald-700/30 dark:border-white/10"
             }`}
           >
             <CreditCard className="mb-1 h-4 w-4" />
-            Tarjeta / Fiat
-            <span className="mt-1 block text-xs text-zinc-500">On-ramp · Stripe mock</span>
+            <span className="font-semibold">Tarjeta</span>
+            <span className="mt-1 block text-xs text-stone-500">Pago familiar · simulación</span>
           </button>
           <button
             type="button"
             onClick={() => setCanal("stellar")}
-            className={`rounded-2xl border px-3 py-3 text-left text-sm ${
+            className={`rounded-2xl border px-3 py-3 text-left text-sm transition ${
               canal === "stellar"
-                ? "border-emerald-700 bg-emerald-50 dark:bg-emerald-950"
-                : "border-emerald-900/10 dark:border-white/10"
+                ? "border-teal-700 bg-teal-50 dark:bg-teal-950"
+                : "border-stone-900/10 bg-white/50 hover:border-teal-700/30 dark:border-white/10"
             }`}
           >
             <Wallet className="mb-1 h-4 w-4" />
-            Cripto Stellar
-            <span className="mt-1 block text-xs text-zinc-500">USDC / XLM · Freighter</span>
+            <span className="font-semibold">Monedero digital</span>
+            <span className="mt-1 block text-xs text-stone-500">USDC / XLM · protegido</span>
           </button>
         </div>
 
@@ -230,20 +236,20 @@ export function CheckoutFlow() {
                   key={code}
                   type="button"
                   onClick={() => setAsset(code)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium ${
+                  className={`rounded-xl px-3 py-1.5 text-xs font-semibold ${
                     asset === code
-                      ? "bg-emerald-700 text-white"
-                      : "border border-emerald-800/20"
+                      ? "bg-teal-600 text-white"
+                      : "border border-stone-900/10 bg-white/70"
                   }`}
                 >
                   {code}
                 </button>
               ))}
             </div>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-stone-500">
               {wallet.isConnected && wallet.publicKey
-                ? `Wallet ${truncatePublicKey(wallet.publicKey)} · ${wallet.network ?? "red desconocida"}`
-                : "Conecta Freighter para firmar el hold del anticipo."}
+                ? `Monedero conectado · ${truncatePublicKey(wallet.publicKey)}`
+                : "Conecta tu monedero digital para confirmar el anticipo protegido."}
             </p>
           </div>
         ) : (
@@ -275,7 +281,7 @@ export function CheckoutFlow() {
 
         {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
-        <Button className="w-full" onClick={() => void pay()} disabled={busy}>
+        <Button className="w-full" size="lg" onClick={() => void pay()} disabled={busy}>
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           Pagar anticipo {formatUsd(desglose.anticipo)}
         </Button>
