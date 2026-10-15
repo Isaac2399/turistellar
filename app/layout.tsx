@@ -20,9 +20,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hub Rural · Ecoturismo y experiencias locales",
+  title: "Turistellar",
   description:
-    "Reserva tours, alojamiento y productos locales en un solo viaje. Anticipo protegido y pasaporte de experiencias.",
+    "Fincas, guías y comedores de la Zona Sur de Costa Rica, con el historial de los servicios confirmados.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

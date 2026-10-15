@@ -11,6 +11,9 @@ import { cn, truncatePublicKey } from "@/lib/utils";
 const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/explorar", label: "Explorar" },
+  { href: "/publicar", label: "Publicar" },
+  { href: "/mis-reservas", label: "Mis reservas" },
+  { href: "/operador", label: "Operador" },
 ] as const;
 
 export function Navbar() {
@@ -51,15 +54,15 @@ export function Navbar() {
           </span>
           <span className="leading-tight">
             <span className="font-display text-lg font-semibold text-stone-900 dark:text-stone-50">
-              Hub Rural
+              Turistellar
             </span>
             <span className="block text-xs font-medium text-stone-500">
-              Ecoturismo y comercio local
+              Zona Sur de Costa Rica
             </span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-semibold md:flex">
+        <nav className="hidden items-center gap-5 text-sm font-semibold lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -80,23 +83,16 @@ export function Navbar() {
                 router.push("/");
                 router.refresh();
               }}
-              className="hidden rounded-2xl border border-stone-900/10 bg-white/60 px-3.5 py-2 text-sm font-semibold text-stone-800 backdrop-blur-sm hover:bg-emerald-50 md:inline-flex dark:border-white/15 dark:bg-white/5 dark:text-stone-100"
+              className="hidden rounded-2xl border border-stone-900/10 bg-white/60 px-3.5 py-2 text-sm font-semibold text-stone-800 backdrop-blur-sm hover:bg-emerald-50 lg:inline-flex dark:border-white/15 dark:bg-white/5 dark:text-stone-100"
             >
               Salir · {user.nombre}
             </button>
-          ) : (
-            <Link
-              href="/login"
-              className="hidden rounded-2xl border border-stone-900/10 bg-white/60 px-3.5 py-2 text-sm font-semibold text-stone-800 backdrop-blur-sm hover:bg-emerald-50 md:inline-flex dark:border-white/15 dark:bg-white/5 dark:text-stone-100"
-            >
-              Iniciar sesión
-            </Link>
-          )}
+          ) : null}
           {isConnected && publicKey ? (
             <button
               type="button"
               onClick={disconnect}
-              className="hidden items-center gap-2 rounded-2xl border border-teal-700/20 bg-teal-50/80 px-3.5 py-2 text-sm font-semibold text-teal-900 hover:bg-teal-100 md:inline-flex dark:border-teal-400/30 dark:bg-teal-950/40 dark:text-teal-100"
+              className="hidden items-center gap-2 rounded-2xl border border-teal-700/20 bg-teal-50/80 px-3.5 py-2 text-sm font-semibold text-teal-900 hover:bg-teal-100 lg:inline-flex dark:border-teal-400/30 dark:bg-teal-950/40 dark:text-teal-100"
               title={publicKey}
             >
               <Wallet className="h-4 w-4" aria-hidden />
@@ -113,7 +109,7 @@ export function Navbar() {
                 void connect();
               }}
               disabled={isLoading}
-              className="hidden items-center gap-2 rounded-2xl bg-emerald-700 px-3.5 py-2 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(4,120,87,0.25)] hover:bg-green-800 disabled:opacity-60 md:inline-flex"
+              className="hidden items-center gap-2 rounded-2xl bg-emerald-700 px-3.5 py-2 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(4,120,87,0.25)] hover:bg-green-800 disabled:opacity-60 lg:inline-flex"
             >
               <Wallet className="h-4 w-4" aria-hidden />
               {walletLabel}
@@ -122,7 +118,7 @@ export function Navbar() {
 
           <button
             type="button"
-            className="inline-flex rounded-2xl p-2 md:hidden"
+            className="inline-flex rounded-2xl p-2 lg:hidden"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             onClick={() => setOpen((value) => !value)}
           >
@@ -133,7 +129,7 @@ export function Navbar() {
 
       <div
         className={cn(
-          "border-t border-stone-900/8 md:hidden dark:border-white/10",
+          "border-t border-stone-900/8 lg:hidden dark:border-white/10",
           open ? "block" : "hidden",
         )}
       >

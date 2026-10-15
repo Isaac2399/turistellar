@@ -1,89 +1,30 @@
-# Turistellar — Hub de Turismo Rural y Comercio Local
-
-Aplicación Web2.5 para que turistas reserven experiencias (tours) y preordenen productos de comerciantes y agricultores locales en un solo paquete.
-
-Los pagos on-chain usan **Stellar Testnet** (XLM / USDC). La rampa fiat-to-crypto (Stripe, MoneyGram u otras) queda preparada a nivel de configuración.
-
-## Stack
-
-- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **Blockchain:** Stellar Testnet, `@stellar/stellar-sdk`, Freighter (`@stellar/freighter-api`)
-- **Persistencia:** stubs para Firebase y Supabase + rutas API en Next.js
-- **Contratos:** carpeta `/contracts` reservada para Soroban (Rust)
-
-## Rutas
-
-| Ruta | Uso |
-| --- | --- |
-| `/` | Inicio |
-| `/tours` | Catálogo de experiencias |
-| `/productos` | Preórdenes de productos locales |
-| `/checkout` | Paquete tour + productos y pago |
-| `/dashboard/turista` | Reservas del turista |
-| `/dashboard/comerciante` | Inventario y liquidaciones |
-| `/api/health` | Salud del servicio y red Stellar |
+# Turistellar
 
 ## Requisitos
 
-- Node.js 22 o superior (requerido por `@stellar/stellar-sdk` v16+)
+- Node.js 22 o superior
 - npm
-- Extensión [Freighter](https://www.freighter.app) para conectar la billetera
+- Un navegador
+- Opcional: la extensión [Freighter](https://www.freighter.app), en la red Testnet, para asociar una confirmación a una cuenta
 
-En PowerShell, si `npx` falla por política de ejecución, usa `npm.cmd` (por ejemplo `npm.cmd run dev`).
-
-## Arranque local
+## Instalación
 
 ```bash
 npm install
-copy .env.example .env.local
+```
+
+## Cómo correrlo
+
+```bash
 npm run dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000).
 
-En PowerShell:
+En PowerShell, si `npm` falla por la política de ejecución:
 
 ```powershell
-Copy-Item .env.example .env.local
 npm.cmd run dev
 ```
 
-## Variables de entorno
-
-Copia `.env.example` a `.env.local`. Lo esencial para Testnet:
-
-- `NEXT_PUBLIC_STELLAR_NETWORK=testnet`
-- `NEXT_PUBLIC_STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org`
-- `NEXT_PUBLIC_STELLAR_RPC_URL=https://soroban-testnet.stellar.org`
-- `NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`
-
-No subas `.env.local` ni claves privadas. El emisor de USDC y los contract IDs de Soroban se completan cuando estén definidos.
-
-## Estructura
-
-```
-app/            Rutas App Router y API
-components/     UI, layout, wallet, tours, productos, checkout
-hooks/          useStellarWallet, useCart
-lib/            stellar, soroban, firebase, supabase, utils
-types/          ExperienciaTuristica, ProductoLocal, PaqueteReserva
-contracts/      Contratos Soroban (Rust)
-```
-
-## Red Stellar (Testnet)
-
-| Recurso | Valor |
-| --- | --- |
-| Horizon | https://horizon-testnet.stellar.org |
-| Soroban RPC | https://soroban-testnet.stellar.org |
-| Passphrase | `Test SDF Network ; September 2015` |
-| Friendbot | https://friendbot.stellar.org |
-
-## Scripts
-
-```bash
-npm run dev    # desarrollo
-npm run build  # producción
-npm run start  # servir build
-npm run lint   # ESLint
-```
+El recorrido del MVP: Inicio, Explorar, la ficha de una oferta, Reservar, Operador y Mis reservas.
